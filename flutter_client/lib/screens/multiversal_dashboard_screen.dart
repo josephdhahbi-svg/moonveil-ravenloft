@@ -8,6 +8,7 @@ import '../services/visual_codex_service.dart';
 import '../storage/moonveil_database.dart';
 import '../widgets/campaign_companion_hud.dart';
 import '../widgets/interactive_dice_roller_modal.dart';
+import '../widgets/visual_codex_gallery_grid.dart';
 
 /// Visual shell only: no fabricated checkpoint, equipment, or stat changes.
 class MultiversalDashboardScreen extends StatefulWidget {
@@ -248,6 +249,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                       ] else if (_tab == 'Admin') ...[
                         if (_db != null) AdminConsoleScreen(database: _db!),
                       ] else if (_tab == 'Atlas') ...[
+                        const VisualCodexGalleryGrid(),
+                        const SizedBox(height: 18),
                         Text('Cosmological Sectors',
                             style: Theme.of(context).textTheme.titleLarge),
                         for (final entry in MultiversalRouterService.sectors.entries)
