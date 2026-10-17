@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:sqflite/sqflite.dart';
 import '../models/moonveil_category_registry.dart';
 import '../storage/moonveil_database.dart';
 
@@ -34,7 +35,7 @@ class MoonveilAssetRegistryService {
       'asset_id': assetId,
       'title': title,
       'asset_path': assetPath,
-    });
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<Map<String, dynamic>>> fetchAssetsForCategory(MoonveilCategory category) async {
