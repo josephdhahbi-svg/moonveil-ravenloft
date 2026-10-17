@@ -21,7 +21,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
     final attributes = state['attributes'];
     if (attributes is Map) {
       final charisma = attributes['charisma'] ?? attributes['CHA'];
-      if (charisma is num) return (charisma.toInt() - 10) ~/ 2;
+      if (charisma is num) return ((charisma.toInt() - 10) / 2).floor();
     }
     return 0;
   }
