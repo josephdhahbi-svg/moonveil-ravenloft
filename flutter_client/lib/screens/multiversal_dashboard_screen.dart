@@ -45,6 +45,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
   ];
   static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Dice'];
 
+  late final Future<PanelArtAudit> _artAudit = VisualCodexAudit.checkUniquePanels();
   MoonveilDatabase? _db;
   Map<String, dynamic>? _vesper;
   List<Map<String, Object?>> _inventory = [];
@@ -191,7 +192,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                             for (var i = 0; i < _panels.length; i++)
                               SizedBox(
                                 width: width,
-                                child: _VisualStoryCard(index: i + 1, panel: _panels[i]),
+                                child: _VisualStoryCard(index: i + 1, panel: _panels[i], artAudit: _artAudit),
                               ),
                           ]);
                         }),
@@ -266,9 +267,10 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
 }
 
 class _VisualStoryCard extends StatelessWidget {
-  const _VisualStoryCard({required this.index, required this.panel});
+  const _VisualStoryCard({required this.index, required this.panel, required this.artAudit});
   final int index;
   final _StoryPanel panel;
+  final Future<PanelArtAudit> artAudit;
 
   @override
   Widget build(BuildContext context) => ClipRRect(
@@ -282,23 +284,35 @@ class _VisualStoryCard extends StatelessWidget {
       child: Stack(fit: StackFit.expand, children: [
         // Local art first. A network image is optional; a painted fallback
         // remains visible offline when both sources are unavailable.
-        Image.asset(
-          panel.asset,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Image.network(
-            panel.networkUrl,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF51406D), Color(0xFF17132C)],
-                  begin: Alignment.topLeft, end: Alignment.bottomRight,
+        FutureBuilder<PanelArtAudit>(
+          future: artAudit,
+          builder: (context, snapshot) {
+            final uniqueLocal = snapshot.hasData &&
+                (snapshot.data!.usable[index] ?? false);
+            Widget remoteOrFallback() => Image.network(
+              panel.networkUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.lerp(const Color(0xFF4B3267),
+                          const Color(0xFF164456), index / 4)!,
+                      const Color(0xFF100B22),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                 ),
+                child: Center(child: Icon(panel.icon, size: 96,
+                    color: const Color(0xAAD7B7FF))),
               ),
-              child: Center(child: Icon(panel.icon,
-                  size: 100, color: const Color(0x88D7B7FF))),
-            ),
-          ),
+            );
+            if (!uniqueLocal) return remoteOrFallback();
+            return Image.asset(panel.asset, fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    remoteOrFallback());
+          },
         ),
         const DecoratedBox(decoration: BoxDecoration(
           gradient: LinearGradient(
