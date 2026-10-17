@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart';
 import 'moonveil_database.dart';
 
 /// Password-encrypted logical backup. Export is read-only and WAL-safe.
-/// Restore is intentionally *not* implemented until a staging/rollback test exists.
+/// Restore is atomic and refuses to overwrite an existing campaign.
 class MoonveilBackup {
   static const format = 'moonveil-logical-backup-v1';
   static const iterations = 210000;
@@ -87,4 +87,68 @@ class MoonveilBackup {
     }
     return data;
   }
+  /// Restore only into an EMPTY campaign database. A failed insert rolls back
+  /// all rows. The caller must verify a separate encrypted backup of any
+  /// existing save before replacing it; this method never deletes live data.
+  static Future<void> restoreIntoEmpty(
+    MoonveilDatabase storage, Uint8List bytes, String password,
+  ) async {
+    final data = await inspectEncrypted(
+      bytes, password, expectedCampaign: storage.campaignId,
+    );
+    final rawTables = data['tables'] as Map<String, dynamic>;
+    const names = [
+      'vtt_campaigns', 'vtt_campaign_members', 'vtt_campaign_events',
+      'character_snapshots', 'inventory_entries'
+    ];
+    final parsed = <String, List<Map<String, Object?>>>{};
+    for (final name in names) {
+      final rows = rawTables[name] as List;
+      if (rows.length > 100000) throw FormatException('Too many rows');
+      parsed[name] = rows.map((row) {
+        if (row is! Map<String, dynamic>) throw FormatException('Invalid row');
+        if (row['campaign_id'] != storage.campaignId) {
+          throw FormatException('Cross-campaign row in backup');
+        }
+        return Map<String, Object?>.from(row);
+      }).toList();
+    }
+    if (parsed['vtt_campaigns']!.length != 1) {
+      throw FormatException('Expected exactly one campaign');
+    }
+    const columns = <String, Set<String>>{
+      'vtt_campaigns': {'campaign_id','name','created_at'},
+      'vtt_campaign_members': {'campaign_id','actor_id','role'},
+      'vtt_campaign_events': {'campaign_id','revision','event_id','actor_id','event_type','payload_json','occurred_at'},
+      'character_snapshots': {'campaign_id','character_id','revision','state_json','updated_at'},
+      'inventory_entries': {'campaign_id','character_id','item_id','item_json','owned','attuned'},
+    };
+    for (final name in names) {
+      for (final row in parsed[name]!) {
+        if (row.keys.toSet().difference(columns[name]!).isNotEmpty ||
+            !columns[name]!.containsAll(row.keys)) {
+          throw FormatException('Unexpected or missing columns in $name');
+        }
+      }
+    }
+    await storage.db.transaction((txn) async {
+      final existing = await txn.rawQuery(
+        'SELECT (SELECT COUNT(*) FROM vtt_campaigns) + '
+        '(SELECT COUNT(*) FROM vtt_campaign_events) + '
+        '(SELECT COUNT(*) FROM character_snapshots) + '
+        '(SELECT COUNT(*) FROM inventory_entries) AS total'
+      );
+      if ((existing.first['total'] as int) != 0) {
+        throw StateError('Restore refused: destination is not empty');
+      }
+      for (final name in names) {
+        for (final row in parsed[name]!) {
+          await txn.insert(name, row, conflictAlgorithm: ConflictAlgorithm.abort);
+        }
+      }
+      final check = await txn.rawQuery('PRAGMA foreign_key_check');
+      if (check.isNotEmpty) throw StateError('Backup foreign key validation failed');
+    });
+  }
+
 }
