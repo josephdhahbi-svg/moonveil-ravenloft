@@ -1,0 +1,76 @@
+[
+  {
+    "chapter_id": "ravenloft_ch_02",
+    "title": "Chapter 2 · The Weeping Catacombs",
+    "panels": [
+      {
+        "panel_number": 1,
+        "panel_title": "The Crypt of Whispers",
+        "panel_text": "A cold draft carries names spoken centuries ago. Stone sarcophagi line the corridor, their seals cracked by frost.",
+        "asset_key": "assets/images/panels/panel_1_threshold.png"
+      },
+      {
+        "panel_number": 2,
+        "panel_title": "Eilistraee's Radiance",
+        "panel_text": "A soft silvery light breaks through a fractured ceiling dome, illuminating dancing motes of stardust.",
+        "asset_key": "assets/images/panels/panel_2_vaelthara.png"
+      },
+      {
+        "panel_number": 3,
+        "panel_title": "The Guardian's Oath",
+        "panel_text": "An automated automaton forged of darksteel and Netherese runes bars the iron gate, demanding a password of pure magic.",
+        "asset_key": "assets/images/panels/panel_3_relics.png"
+      },
+      {
+        "panel_number": 4,
+        "panel_title": "The Shattered Horizon",
+        "panel_text": "Beyond the catacomb wall lies a sprawling vista of the Barovian mists churning under a blood-red moon.",
+        "asset_key": "assets/images/panels/panel_4_fate.png"
+      }
+    ],
+    "choices": [
+      "1. Lawful Good — Offer a prayer to Selûne and disarm the trap protecting the vault.",
+      "2. Neutral Good — Guide the lost spirit safely through the iron gate.",
+      "3. Chaotic Good — Overload the arcane ward to shatter the automated guardian.",
+      "4. Utility — Analyze the Netherese inscriptions for hidden magical conduits.",
+      "5. Action — Charge past the guardian into the weeping catacombs."
+    ]
+  },
+  {
+    "chapter_id": "ravenloft_ch_03",
+    "title": "Chapter 3 · The Obsidian Observatory",
+    "panels": [
+      {
+        "panel_number": 1,
+        "panel_title": "The Astral Lens",
+        "panel_text": "Glass spires rise toward a blackened dome where celestial charts shift in real-time.",
+        "asset_key": "assets/images/panels/panel_1_threshold.png"
+      },
+      {
+        "panel_number": 2,
+        "panel_title": "Mystra's Echo",
+        "panel_text": "A spectral projection of the Weave flickers across the brass instruments, signaling an imminent collapse.",
+        "asset_key": "assets/images/panels/panel_2_vaelthara.png"
+      },
+      {
+        "panel_number": 3,
+        "panel_title": "The Codex of Alignment",
+        "panel_text": "Ancient tombs float weightlessly in the center of the chamber, bound by magnetic arcane chains.",
+        "asset_key": "assets/images/panels/panel_3_relics.png"
+      },
+      {
+        "panel_number": 4,
+        "panel_title": "The Convergence",
+        "panel_text": "The multiversal gears lock into place. Every choice made across Barovia converges upon this single focal point.",
+        "asset_key": "assets/images/panels/panel_4_fate.png"
+      }
+    ],
+    "choices": [
+      "1. Lawful Good — Secure the floating codex to stabilize the regional ley lines.",
+      "2. Neutral Good — Calibrate the astral lens to protect civilian outposts below.",
+      "3. Chaotic Good — Sever the magnetic chains and let the knowledge scatter freely.",
+      "4. Utility — Record the celestial convergence vectors into your personal journal.",
+      "5. Action — Seize the core mechanism before the observatory collapses."
+    ]
+  }
+]
