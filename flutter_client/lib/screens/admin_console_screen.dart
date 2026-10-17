@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/admin_sync_bridge_service.dart';
+import 'admin_telemetry_screen.dart';
 import '../storage/moonveil_database.dart';
 
 /// Local audit viewer with explicitly configured, opt-in remote export.
@@ -94,6 +95,8 @@ class _AdminConsoleScreenState extends State<AdminConsoleScreen> {
       if (_message != null) Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: SelectableText(_message!)),
+      const SizedBox(height: 12),
+      AdminTelemetryScreen(database: widget.database),
       const SizedBox(height: 12),
       const Text('LOCAL CAMPAIGN EVENT LOG', style: TextStyle(fontWeight: FontWeight.bold)),
       if (_logs.isEmpty) const Padding(
