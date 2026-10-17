@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/multiversal_router_service.dart';
+import '../services/visual_codex_service.dart';
 import '../storage/moonveil_database.dart';
 import '../widgets/campaign_companion_hud.dart';
 import '../widgets/interactive_dice_roller_modal.dart';
@@ -24,16 +25,16 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
   static const _panels = [
     _StoryPanel('The Silver Threshold',
         'A moonlit rune door stands between Barovia and a forgotten Netherese archive.',
-        'assets/images/panel_threshold.png', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23', Icons.door_front_door_outlined),
+        VisualCodexService.panelImageMap[1]!, 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23', Icons.door_front_door_outlined),
     _StoryPanel('Vaelthara’s Warning',
         'The silver-haired archlich speaks through the Weave: “Trust the light beyond the mists.”',
-        'assets/images/panel_vaelthara.png', 'https://images.unsplash.com/photo-1534447677768-be436bb09401', Icons.auto_awesome),
+        VisualCodexService.panelImageMap[2]!, 'https://images.unsplash.com/photo-1534447677768-be436bb09401', Icons.auto_awesome),
     _StoryPanel('The Three Relics',
         'Sight of Vaelthara, Hand of the Weave, and Silver Strand Codex resonate in the dark.',
-        'assets/images/panel_relics.png', 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f', Icons.diamond_outlined),
+        VisualCodexService.panelImageMap[3]!, 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f', Icons.diamond_outlined),
     _StoryPanel('An Unwritten Fate',
         'Deep below Barovia, an ancient mechanism begins to turn.',
-        'assets/images/panel_fate.png', 'https://images.unsplash.com/photo-1514539079130-25950c84af65', Icons.brightness_3_outlined),
+        VisualCodexService.panelImageMap[4]!, 'https://images.unsplash.com/photo-1514539079130-25950c84af65', Icons.brightness_3_outlined),
   ];
   static const _choices = [
     ('Lawful Good', 'Secure the archive and protect anyone trapped within.'),
