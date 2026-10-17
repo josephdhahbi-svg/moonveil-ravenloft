@@ -1,3 +1,4 @@
+import 'screens/multiversal_dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'storage/moonveil_database.dart';
 
@@ -16,7 +17,7 @@ class MoonveilApp extends StatelessWidget {
         brightness: Brightness.dark),
       useMaterial3: true,
     ),
-    home: const VesperHome(),
+    home: const MultiversalDashboardScreen(),
   );
 }
 
