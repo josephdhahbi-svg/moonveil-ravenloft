@@ -23,7 +23,8 @@ class MoonveilDatabase {
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
         await db.rawQuery('PRAGMA journal_mode = WAL');
-        await db.execute('PRAGMA busy_timeout = 5000');
+        // sqflite Android execute() rejects PRAGMA statements that return rows.
+        await db.rawQuery('PRAGMA busy_timeout = 5000');
       },
       onCreate: (db, version) async {
         await _migrate(db, 0, version);
