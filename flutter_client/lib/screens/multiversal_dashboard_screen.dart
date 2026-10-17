@@ -4,6 +4,7 @@ import '../services/multiversal_router_service.dart';
 import '../models/character_profile.dart';
 import '../screens/character_sheet_screen.dart';
 import '../screens/admin_console_screen.dart';
+import '../screens/luma_admin_robot_command_screen.dart';
 import '../screens/multiversal_command_deck_screen.dart';
 import '../services/visual_codex_service.dart';
 import '../storage/moonveil_database.dart';
@@ -49,7 +50,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
     ('Utility', 'Study the runes and document their resonance.'),
     ('Action', 'Advance cautiously through the threshold.'),
   ];
-  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'Modules', 'Dice'];
+  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Modules', 'Dice'];
 
   late final Future<PanelArtAudit> _artAudit = VisualCodexAudit.checkUniquePanels();
   MoonveilDatabase? _db;
@@ -249,6 +250,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                               subtitle: Text(item.toString()))),
                       ] else if (_tab == 'Journal') ...[
                         const Text('Campaign journal integration pending; no events fabricated.'),
+                      ] else if (_tab == 'LUMA-01') ...[
+                        if (_db != null) LumaAdminRobotCommandScreen(database: _db!),
                       ] else if (_tab == 'Admin') ...[
                         if (_db != null) AdminConsoleScreen(database: _db!),
                       ] else if (_tab == 'Atlas') ...[
