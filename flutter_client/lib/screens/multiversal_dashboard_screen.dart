@@ -8,6 +8,7 @@ import '../screens/luma_admin_robot_command_screen.dart';
 import '../screens/copilot_sync_dashboard_screen.dart';
 import '../screens/copilot_build_timeline_screen.dart';
 import '../screens/system_override_control_screen.dart';
+import '../screens/moonveil_category_browser.dart';
 import '../screens/multiversal_command_deck_screen.dart';
 import '../services/visual_codex_service.dart';
 import '../storage/moonveil_database.dart';
@@ -53,7 +54,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
     ('Utility', 'Study the runes and document their resonance.'),
     ('Action', 'Advance cautiously through the threshold.'),
   ];
-  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Modules', 'Dice'];
+  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Categories', 'Modules', 'Dice'];
 
   late final Future<PanelArtAudit> _artAudit = VisualCodexAudit.checkUniquePanels();
   MoonveilDatabase? _db;
@@ -253,6 +254,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                               subtitle: Text(item.toString()))),
                       ] else if (_tab == 'Journal') ...[
                         const Text('Campaign journal integration pending; no events fabricated.'),
+                      ] else if (_tab == 'Categories') ...[
+                        if (_db != null) MoonveilCategoryBrowser(database: _db!),
                       ] else if (_tab == 'System Control') ...[
                         const SystemOverrideControlScreen(),
                       ] else if (_tab == 'Build Log') ...[
