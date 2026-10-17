@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../services/multiversal_router_service.dart';
+import '../models/character_profile.dart';
+import '../screens/character_sheet_screen.dart';
 import '../services/visual_codex_service.dart';
 import '../storage/moonveil_database.dart';
 import '../widgets/campaign_companion_hud.dart';
@@ -232,7 +235,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                         ),
                       ] else if (_tab == 'Character') ...[
                         Text('Character Record', style: Theme.of(context).textTheme.titleLarge),
-                        SelectableText(_vesper?.toString() ?? 'Awaiting verified Vesper checkpoint'),
+                        CharacterSheetScreen(character: _vesper == null ? null : CharacterProfile.fromJson(_vesper!, ownedItems: _inventory.where((row) => row['owned'] == 1).map((row) { final item = row['item_json']; if (item is String) { try { final decoded = jsonDecode(item); if (decoded is Map && decoded['name'] is String) return decoded['name'] as String; } catch (_) {} } return row['item_id'].toString(); }).toList())),
                       ] else if (_tab == 'Inventory') ...[
                         Text('Inventory', style: Theme.of(context).textTheme.titleLarge),
                         if (_inventory.isEmpty) const Text('No verified inventory imported'),
