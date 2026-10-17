@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import 'system_override_command_dispatcher.dart';
 
 /// Optional AUTOMATIC1111 bridge. Does not claim that images are saved to the app bundle.
 class PhotorealisticGenerationPipelineService {
@@ -16,6 +17,9 @@ class PhotorealisticGenerationPipelineService {
     required String endpoint,
     http.Client? client,
   }) async {
+    if (SystemOverrideCommandDispatcher.isImageGenerationBlocked) {
+      throw StateError('Image generation blocked by system override.');
+    }
     final uri = Uri.tryParse(endpoint);
     if (uri == null || !uri.hasAuthority || (uri.scheme != 'http' && uri.scheme != 'https')) {
       throw const FormatException('Enter a valid HTTP(S) Stable Diffusion endpoint.');
