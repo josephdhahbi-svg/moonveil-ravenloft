@@ -12,10 +12,11 @@ class MultiversalDashboardScreen extends StatefulWidget {
 }
 
 class _StoryPanel {
-  const _StoryPanel(this.title, this.story, this.asset, this.icon);
+  const _StoryPanel(this.title, this.story, this.asset, this.networkUrl, this.icon);
   final String title;
   final String story;
   final String asset;
+  final String networkUrl;
   final IconData icon;
 }
 
@@ -23,16 +24,16 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
   static const _panels = [
     _StoryPanel('The Silver Threshold',
         'A moonlit rune door stands between Barovia and a forgotten Netherese archive.',
-        'assets/images/panel_threshold.png', Icons.door_front_door_outlined),
+        'assets/images/panel_threshold.png', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23', Icons.door_front_door_outlined),
     _StoryPanel('Vaelthara’s Warning',
         'The silver-haired archlich speaks through the Weave: “Trust the light beyond the mists.”',
-        'assets/images/panel_vaelthara.png', Icons.auto_awesome),
+        'assets/images/panel_vaelthara.png', 'https://images.unsplash.com/photo-1534447677768-be436bb09401', Icons.auto_awesome),
     _StoryPanel('The Three Relics',
         'Sight of Vaelthara, Hand of the Weave, and Silver Strand Codex resonate in the dark.',
-        'assets/images/panel_relics.png', Icons.diamond_outlined),
+        'assets/images/panel_relics.png', 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f', Icons.diamond_outlined),
     _StoryPanel('An Unwritten Fate',
         'Deep below Barovia, an ancient mechanism begins to turn.',
-        'assets/images/panel_fate.png', Icons.brightness_3_outlined),
+        'assets/images/panel_fate.png', 'https://images.unsplash.com/photo-1514539079130-25950c84af65', Icons.brightness_3_outlined),
   ];
   static const _choices = [
     ('Lawful Good', 'Secure the archive and protect anyone trapped within.'),
@@ -284,7 +285,7 @@ class _VisualStoryCard extends StatelessWidget {
           panel.asset,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) => Image.network(
-            'https://images.unsplash.com/photo-1518709268805-4e9042af9f23',
+            panel.networkUrl,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => Container(
               decoration: const BoxDecoration(
