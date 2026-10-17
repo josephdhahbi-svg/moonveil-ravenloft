@@ -6,6 +6,7 @@ import '../screens/character_sheet_screen.dart';
 import '../screens/admin_console_screen.dart';
 import '../screens/luma_admin_robot_command_screen.dart';
 import '../screens/copilot_sync_dashboard_screen.dart';
+import '../screens/copilot_build_timeline_screen.dart';
 import '../screens/photorealistic_generator_hub_screen.dart';
 import '../screens/multiversal_command_deck_screen.dart';
 import '../services/visual_codex_service.dart';
@@ -52,7 +53,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
     ('Utility', 'Study the runes and document their resonance.'),
     ('Action', 'Advance cautiously through the threshold.'),
   ];
-  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Art Studio', 'Modules', 'Dice'];
+  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'Art Studio', 'Modules', 'Dice'];
 
   late final Future<PanelArtAudit> _artAudit = VisualCodexAudit.checkUniquePanels();
   MoonveilDatabase? _db;
@@ -254,6 +255,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                         const Text('Campaign journal integration pending; no events fabricated.'),
                       ] else if (_tab == 'Art Studio') ...[
                         const PhotorealisticGeneratorHubScreen(),
+                      ] else if (_tab == 'Build Log') ...[
+                        if (_db != null) CopilotBuildTimelineScreen(database: _db!),
                       ] else if (_tab == 'Copilot') ...[
                         if (_db != null) CopilotSyncDashboardScreen(database: _db!),
                       ] else if (_tab == 'LUMA-01') ...[
