@@ -12,6 +12,20 @@ class MultiversalDashboardScreen extends StatefulWidget {
 }
 
 class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
+  // Use an explicitly stored modifier or a recorded Charisma score only.
+  // Unknown attributes never receive an invented bonus.
+  static int _abilityModifier(Map<String, dynamic>? state) {
+    if (state == null) return 0;
+    final direct = state['charisma_modifier'];
+    if (direct is int) return direct;
+    final attributes = state['attributes'];
+    if (attributes is Map) {
+      final charisma = attributes['charisma'] ?? attributes['CHA'];
+      if (charisma is num) return (charisma.toInt() - 10) ~/ 2;
+    }
+    return 0;
+  }
+
   MoonveilDatabase? _db;
   Map<String, dynamic>? _vesper;
   List<Map<String, Object?>> _inventory = [];
@@ -62,7 +76,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
       actions: [IconButton(onPressed: _refresh,
         icon: const Icon(Icons.refresh), tooltip: 'Reload saved state')]),
     floatingActionButton: FloatingActionButton.extended(
-      onPressed: () => InteractiveDiceRollerModal.show(context),
+      onPressed: () => InteractiveDiceRollerModal.show(context,
+        modifier: _abilityModifier(_vesper)),
       icon: const Icon(Icons.casino), label: const Text('Roll')),
     body: _loading
       ? const Center(child: CircularProgressIndicator())
