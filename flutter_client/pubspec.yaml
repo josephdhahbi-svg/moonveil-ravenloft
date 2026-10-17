@@ -25,3 +25,6 @@ flutter:
     - assets/images/portraits/
     - assets/images/panels/
     - assets/images/backgrounds/
+    - assets/images/items/
+    - assets/images/creatures/
+    - assets/images/props/
