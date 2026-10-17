@@ -20,3 +20,6 @@ flutter:
   assets:
     - assets/data/
     - assets/images/
+    - assets/images/portraits/
+    - assets/images/panels/
+    - assets/images/backgrounds/
