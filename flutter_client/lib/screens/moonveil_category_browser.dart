@@ -37,22 +37,29 @@ class _MoonveilCategoryBrowserState extends State<MoonveilCategoryBrowser> {
           if (value != null) setState(() { selected = value; refresh(); });
         },
       ),
-      FutureBuilder<List<Map<String, dynamic>>>(
+      TextButton.icon(onPressed: () => setState(refresh), icon: const Icon(Icons.refresh), label: const Text('Recheck bundled images')),
+      Expanded(child: FutureBuilder<List<Map<String, dynamic>>>(
         future: assets,
         builder: (context, snapshot) {
           if (snapshot.hasError) return Text('Asset registry error: ${snapshot.error}');
           if (!snapshot.hasData) return const CircularProgressIndicator();
           if (snapshot.data!.isEmpty) return const Text('No assets bound to this category.');
-          return Column(children: [
+          return ListView(children: [
             for (final item in snapshot.data!)
               ListTile(
-                leading: Icon(item['exists'] == true ? Icons.image : Icons.image_not_supported),
+                leading: item['exists'] == true
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: Image.asset(item['path'].toString(), width: 64, height: 64, fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => const Icon(Icons.broken_image)),
+                      )
+                    : const Icon(Icons.image_not_supported),
                 title: Text(item['title'].toString()),
                 subtitle: Text(item['exists'] == true ? item['path'].toString() : 'Missing bundled PNG: ${item['path']}'),
               ),
           ]);
         },
-      ),
+      )),
     ],
   );
 }
