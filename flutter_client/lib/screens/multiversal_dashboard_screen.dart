@@ -4,6 +4,7 @@ import '../services/multiversal_router_service.dart';
 import '../models/character_profile.dart';
 import '../screens/character_sheet_screen.dart';
 import '../screens/admin_console_screen.dart';
+import '../screens/multiversal_command_deck_screen.dart';
 import '../services/visual_codex_service.dart';
 import '../storage/moonveil_database.dart';
 import '../widgets/campaign_companion_hud.dart';
@@ -48,7 +49,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
     ('Utility', 'Study the runes and document their resonance.'),
     ('Action', 'Advance cautiously through the threshold.'),
   ];
-  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'Dice'];
+  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'Modules', 'Dice'];
 
   late final Future<PanelArtAudit> _artAudit = VisualCodexAudit.checkUniquePanels();
   MoonveilDatabase? _db;
@@ -183,7 +184,9 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                         ]),
                       ),
                       const SizedBox(height: 16),
-                      if (_tab == 'Adventure') ...[
+                      if (_tab == 'Modules') ...[
+                        MultiversalCommandDeckScreen(onOpenTab: (tab) => setState(() => _tab = tab)),
+                      ] else if (_tab == 'Adventure') ...[
                         Text('The Forgotten Archive',
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 fontFamily: 'serif', color: accent)),
