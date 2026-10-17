@@ -10,14 +10,15 @@ class MoonveilDatabase {
   final String campaignId;
 
   static const allowedCampaigns = {'vesper', 'alice'};
-  static Future<MoonveilDatabase> open(String campaign) async {
+  static Future<MoonveilDatabase> open(String campaign, {String? databasePath, DatabaseFactory? factory}) async {
     if (!allowedCampaigns.contains(campaign)) {
       throw ArgumentError.value(campaign, 'campaign', 'Unknown campaign');
     }
-    final root = await getDatabasesPath();
-    final path = p.join(root, '${campaign}_save.db');
-    final db = await openDatabase(
+    final root = databasePath == null ? await getDatabasesPath() : null;
+    final path = databasePath ?? p.join(root!, '${campaign}_save.db');
+    final db = await (factory ?? databaseFactory).openDatabase(
       path,
+      options: OpenDatabaseOptions(
       version: 3,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
@@ -28,6 +29,7 @@ class MoonveilDatabase {
         await _migrate(db, 0, version);
       },
       onUpgrade: _migrate,
+      ),
     );
     return MoonveilDatabase._(db, campaign);
   }
