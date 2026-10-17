@@ -26,7 +26,7 @@ class _StoryPanel {
 }
 
 class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
-  static const _panels = [
+  static final _panels = [
     _StoryPanel('The Silver Threshold',
         'A moonlit rune door stands between Barovia and a forgotten Netherese archive.',
         VisualCodexService.panelImageMap[1]!, 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23', Icons.door_front_door_outlined),
