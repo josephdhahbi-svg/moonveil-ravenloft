@@ -68,7 +68,7 @@ class VisualCodexGalleryGrid extends StatelessWidget {
                         ? Image.asset(VisualCodexService.panelImageMap[number]!, fit: BoxFit.cover)
                         : Container(color: const Color(0xFF191426),
                             child: Center(child: Text(audit?.issues[number] ??
-                                'Checking image...', textAlign: TextAlign.center))),
+                                'Checking image...', textAlign: TextAlign.center)))),
                     Padding(padding: const EdgeInsets.all(12),
                       child: Text('PANEL $number · ${titles[number]}')),
                   ]),
