@@ -17,3 +17,6 @@ dev_dependencies:
   test: ^1.25.0
 flutter:
   uses-material-design: true
+  assets:
+    - assets/data/
+    - assets/images/
