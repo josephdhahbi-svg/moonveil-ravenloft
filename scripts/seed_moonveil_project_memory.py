@@ -8,7 +8,10 @@ import json
 from pathlib import Path
 import sys
 
-from moonveil_project_memory import connect, now, DEFAULT_DB
+try:
+    from scripts.moonveil_project_memory import connect, now, DEFAULT_DB
+except ModuleNotFoundError:
+    from moonveil_project_memory import connect, now, DEFAULT_DB
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "project_context" / "moonveil_verified_context.json"
