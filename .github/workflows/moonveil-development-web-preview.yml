@@ -35,10 +35,27 @@ jobs:
       - name: Build web preview
         working-directory: flutter_client
         run: flutter build web --release --target lib/preview_main.dart --base-href /moonveil-preview/
-      - name: Package preview
-        run: tar -czf moonveil-preview-web.tar.gz -C flutter_client/build/web .
+      - name: Verify existing playable browser game
+        run: |
+          test -f play/index.html
+          for module in moonveil-audio.js moonveil-cinematics.js moonveil-combat.js moonveil-ravenloft-tables.js; do
+            test -s "play/$module"
+            node --check "play/$module"
+            grep -Fq "./$module" play/index.html
+          done
+          grep -Fq 'moonveil-portable-v1' play/index.html
+          grep -Fq 'moonveil-vesper-portable-save.json' play/index.html
+      - name: Package original playable game and Flutter prototype separately
+        run: |
+          tar -czf moonveil-playable-browser.tar.gz -C play .
+          tar -czf moonveil-flutter-training-preview.tar.gz -C flutter_client/build/web .
       - uses: actions/upload-artifact@v4
         with:
-          name: moonveil-preview-web
-          path: moonveil-preview-web.tar.gz
+          name: moonveil-playable-browser
+          path: moonveil-playable-browser.tar.gz
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moonveil-flutter-training-preview
+          path: moonveil-flutter-training-preview.tar.gz
           retention-days: 7
