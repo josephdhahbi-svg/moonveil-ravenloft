@@ -20,8 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FLUTTER = ROOT / "flutter_client"
 DEST = FLUTTER / "assets" / "images" / "moonveil_comic"
 INDEX = FLUTTER / "assets" / "data" / "moonveil_comic_index.json"
-ALLOWED = ("story_panels/", "locations/", "character_tokens/",
-           "monster_tokens/", "object_tokens/")
+ALLOWED = ("story_panels/", "locations/", "tokens/")
 PNG_MAGIC = bytes((137, 80, 78, 71, 13, 10, 26, 10))
 BRANCH = "integration/copy-first-audit"
 
