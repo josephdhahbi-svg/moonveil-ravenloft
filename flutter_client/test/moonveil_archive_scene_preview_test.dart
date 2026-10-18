@@ -13,7 +13,7 @@ void main() {
           choice: choice, onEncounter: () => opened = true),
       )));
       final scene = MoonveilArchiveScenePreview.outcomes[choice]!;
-      expect(find.text(scene.title), findsOneWidget);
+      expect(find.text(scene.title), findsNWidgets(2));
       expect(find.text(scene.story), findsOneWidget);
       await tester.tap(find.byKey(const Key('scene-open-encounter')));
       expect(opened, isTrue);
