@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "mode": "visual_recipes_only",
+  "source_library": "Moonveil Universe/Visual Asset Library/moonveil_vesper_asset_library_v3.zip",
+  "asset_prefix": "assets/images/vesper_v3/",
+  "rules": {
+    "non_destructive": true,
+    "never_consume_items_without_game_engine_confirmation": true,
+    "never_grant_items_spells_or_ascensions_from_visual_previews": true,
+    "require_campaign_event_for_completion": true,
+    "do_not_modify_saves": true
+  },
+  "recipes": [
+    {
+      "id": "vesper_lich_ascension_preview",
+      "name": "Lich Ascension",
+      "unlock_level": 17,
+      "status": "locked",
+      "layers": [
+        "portraits/vesper_transylvania.png",
+        "items/silver_strand_codex.png",
+        "items/gems.png",
+        "abilities/hex.png",
+        "tokens/vesper_casting.png"
+      ],
+      "result_preview": "visual mockup only",
+      "mechanics": "Separate quest, prerequisites, ritual and approval required"
+    },
+    {
+      "id": "vesper_archlich_ascension_preview",
+      "name": "Archlich Ascension",
+      "unlock_level": 20,
+      "status": "locked",
+      "layers": [
+        "portraits/vesper_full_body.png",
+        "items/sight_of_vaelthara.png",
+        "abilities/shield.png",
+        "tokens/vesper_summon.png"
+      ],
+      "result_preview": "visual mockup only",
+      "mechanics": "Separate post-lich progression required"
+    },
+    {
+      "id": "relic_resonance_visual",
+      "name": "Relic Resonance",
+      "unlock_level": 1,
+      "status": "completed_story_event",
+      "layers": [
+        "items/sight_of_vaelthara.png",
+        "items/hand_of_weave.png",
+        "items/silver_strand_codex.png",
+        "items/vial_of_starlight.png"
+      ],
+      "result_preview": "layered artwork only",
+      "mechanics": "Do not replay Choice F or change save state"
+    },
+    {
+      "id": "codex_gem_fusion_preview",
+      "name": "Codex Gem Fusion",
+      "unlock_level": null,
+      "status": "concept",
+      "layers": [
+        "items/silver_strand_codex.png",
+        "items/gems.png",
+        "abilities/summon.png"
+      ],
+      "result_preview": "concept artwork only",
+      "mechanics": "No inventory consumption or equipment changes"
+    }
+  ]
+}
