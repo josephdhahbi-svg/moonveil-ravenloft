@@ -19,6 +19,7 @@ class _ArchiveCombatState extends State<ForgottenArchiveCombatPanel> {
   String status = 'Training encounter: no player HP or resources are changed.';
   bool busy = false;
   bool loading = true;
+  bool restoreFailed = false;
 
   @override
   void initState() {
@@ -50,13 +51,14 @@ class _ArchiveCombatState extends State<ForgottenArchiveCombatPanel> {
     } catch (error) {
       if (mounted) setState(() {
         loading = false;
+        restoreFailed = true;
         status = 'Could not load training encounter: $error';
       });
     }
   }
 
   Future<void> attack() async {
-    if (busy || loading || !guardian.isAlive) return;
+    if (busy || loading || restoreFailed || !guardian.isAlive) return;
     setState(() => busy = true);
     final previousHp = guardian.hp;
     try {
@@ -91,7 +93,7 @@ class _ArchiveCombatState extends State<ForgottenArchiveCombatPanel> {
         Text(status),
         const SizedBox(height: 8),
         FilledButton.icon(
-          onPressed: busy || loading || !guardian.isAlive ? null : attack,
+          onPressed: busy || loading || restoreFailed || !guardian.isAlive ? null : attack,
           icon: const Icon(Icons.gps_fixed), label: const Text('Practice attack · d20'),
         ),
       ],
