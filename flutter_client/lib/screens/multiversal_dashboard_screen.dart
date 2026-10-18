@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'moonveil_vtt_hud_screen.dart';
 import 'package:flutter/material.dart';
 import '../services/multiversal_router_service.dart';
 import '../models/character_profile.dart';
@@ -16,7 +17,6 @@ import '../widgets/cinematic_storyboard_widget.dart';
 import '../screens/multiversal_command_deck_screen.dart';
 import '../services/visual_codex_service.dart';
 import '../storage/moonveil_database.dart';
-import '../widgets/campaign_companion_hud.dart';
 import '../widgets/interactive_dice_roller_modal.dart';
 import '../widgets/visual_codex_gallery_grid.dart';
 
@@ -164,7 +164,14 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               color: accent, fontFamily: 'serif')),
                       const SizedBox(height: 10),
-                      CampaignCompanionHud(character: _vesper, inventory: _inventory),
+                      MoonveilVttHudScreen(
+                        character: _vesper,
+                        ownedItems: _inventory.where((item) => item['owned'] == 1).length,
+                        onDice: _roll,
+                        onInventory: () => setState(() => _tab = 'Inventory'),
+                        onAtlas: () => setState(() => _tab = 'Atlas'),
+                        onCodex: () => setState(() => _tab = 'Categories'),
+                      ),
                       const SizedBox(height: 12),
                       if (_vesper == null)
                         const Card(child: ListTile(
