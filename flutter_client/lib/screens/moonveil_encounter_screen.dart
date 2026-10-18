@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../services/moonveil_encounter_codec.dart';
 import '../services/moonveil_encounter_store.dart';
 import '../services/moonveil_audio_service.dart';
+import '../services/moonveil_ambient_soundtrack.dart';
 import '../services/moonveil_encounter_engine.dart';
 
 /// Encounter sandbox. Checkpoints live in separate campaign-scoped preferences.
@@ -20,6 +21,8 @@ class MoonveilEncounterScreen extends StatefulWidget {
 class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
   MoonveilEncounter? _encounter;
   bool _soundEnabled = false;
+  bool _musicEnabled = false;
+  final MoonveilMusicController _music = MoonveilMusicController();
   final MoonveilAudioService _audio = const MoonveilAudioService();
   String? _message;
   final Random _dice = Random();
@@ -56,6 +59,7 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
 
   @override
   void dispose() {
+    _music.dispose();
     _importJson.dispose();
     _enemyName.dispose();
     _enemyHp.dispose();
@@ -118,6 +122,22 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
       });
     } catch (error) {
       setState(() => _message = 'Encounter import rejected: $error');
+    }
+  }
+
+  Future<void> _toggleMusic(bool enabled) async {
+    try {
+      if (enabled) {
+        await _music.start();
+      } else {
+        await _music.stop();
+      }
+      if (mounted) setState(() => _musicEnabled = enabled);
+    } catch (error) {
+      if (mounted) setState(() {
+        _musicEnabled = false;
+        _message = 'Background music unavailable on this device: $error';
+      });
     }
   }
 
@@ -190,6 +210,13 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Text('Encounter Sandbox', style: Theme.of(context).textTheme.titleLarge),
           const Text('Encounter checkpoints are separate from character saves and inventory.'),
+          SwitchListTile(
+            key: const Key('encounter-music-toggle'),
+            title: const Text('Moonveil ambient music'),
+            subtitle: const Text('Original synthesized gothic ambience; tap to play or stop.'),
+            value: _musicEnabled,
+            onChanged: _toggleMusic,
+          ),
           SwitchListTile(
             key: const Key('encounter-sound-toggle'),
             title: const Text('Combat UI sounds'),
