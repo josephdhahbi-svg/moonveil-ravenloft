@@ -47,7 +47,7 @@ def install(archive: pathlib.Path) -> None:
         target.parent.mkdir(parents=True, exist_ok=True)
         if not target.exists():
             target.write_bytes(data)
-        print("Verified:", target.relative_to(ROOT))
+        print("Verified:", target.relative_to(FLUTTER))
     print("Seven images verified and staged. Commit only to the development branch.")
 
 
