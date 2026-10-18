@@ -203,7 +203,8 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
   @override
   Widget build(BuildContext context) {
     final encounter = _encounter;
-    return Card(
+    return SingleChildScrollView(
+      child: Card(
       key: const Key('moonveil-encounter'),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -372,6 +373,7 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
           ],
           if (_message != null) Text(_message!),
         ]),
+      ),
       ),
     );
   }
