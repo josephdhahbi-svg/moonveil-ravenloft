@@ -71,6 +71,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
   bool _loading = true;
   String _tab = 'Adventure';
   String? _selectedChoice;
+  bool _savingChoice = false;
 
   static int _abilityModifier(Map<String, dynamic>? state) {
     if (state == null) return 0;
@@ -97,6 +98,16 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
       final inventory = await db.db.query('inventory_entries',
           where: 'campaign_id = ? AND character_id = ?',
           whereArgs: ['vesper', 'vesper-vane']);
+      final eventRows = await db.events();
+      String? savedChoice;
+      for (final row in eventRows) {
+        if (row['event_type'] == 'FORGOTTEN_ARCHIVE_CHOICE') {
+          final payload = jsonDecode(row['payload_json'] as String);
+          if (payload is Map && payload['choice'] is String) {
+            savedChoice = payload['choice'] as String;
+          }
+        }
+      }
       if (!mounted) {
         if (_db == null) await db.close();
         return;
@@ -105,6 +116,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
         _db = db;
         _vesper = character;
         _inventory = inventory;
+        _selectedChoice = savedChoice;
         _loading = false;
         _error = null;
       });
@@ -122,6 +134,27 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
   void dispose() {
     _db?.close();
     super.dispose();
+  }
+
+  Future<void> _saveArchiveChoice(String choice) async {
+    final db = _db;
+    if (db == null || _vesper == null || _savingChoice) return;
+    setState(() => _savingChoice = true);
+    try {
+      await db.appendEvent(
+        eventId: 'archive-choice-${DateTime.now().microsecondsSinceEpoch}',
+        actorId: 'vesper-vane',
+        type: 'FORGOTTEN_ARCHIVE_CHOICE',
+        payload: {'scene': 'forgotten-netherese-barovian-archive',
+          'sector': 'D', 'link': 2, 'choice': choice},
+      );
+      if (mounted) setState(() => _selectedChoice = choice);
+    } catch (error) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Choice was not saved: $error')));
+    } finally {
+      if (mounted) setState(() => _savingChoice = false);
+    }
   }
 
   void _roll() => InteractiveDiceRollerModal.show(
@@ -243,8 +276,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 8),
                                     child: OutlinedButton(
-                                      onPressed: () => setState(() =>
-                                          _selectedChoice = _choices[i].$1),
+                                      onPressed: _savingChoice || _db == null || _vesper == null
+                                          ? null : () => _saveArchiveChoice(_choices[i].$1),
                                       style: OutlinedButton.styleFrom(
                                         alignment: Alignment.centerLeft,
                                         padding: const EdgeInsets.all(14),
@@ -255,7 +288,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                                     ),
                                   ),
                                 if (_selectedChoice != null)
-                                  Text('Selected: $_selectedChoice. Story consequences are not yet connected to the campaign engine.',
+                                  Text('Saved choice: $_selectedChoice. Story consequences are not yet connected to the campaign engine.',
                                       style: const TextStyle(color: accent)),
                               ],
                             ),
