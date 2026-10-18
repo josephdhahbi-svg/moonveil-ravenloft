@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/moonveil_encounter_codec.dart';
 import '../services/moonveil_encounter_store.dart';
+import '../services/moonveil_audio_service.dart';
 import '../services/moonveil_encounter_engine.dart';
 
 /// Encounter sandbox. Checkpoints live in separate campaign-scoped preferences.
@@ -18,6 +19,8 @@ class MoonveilEncounterScreen extends StatefulWidget {
 
 class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
   MoonveilEncounter? _encounter;
+  bool _soundEnabled = false;
+  final MoonveilAudioService _audio = const MoonveilAudioService();
   String? _message;
   final Random _dice = Random();
   final TextEditingController _importJson = TextEditingController();
@@ -143,6 +146,13 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
     }
   }
 
+  void _advanceTurn() {
+    final encounter = _encounter;
+    if (encounter == null) return;
+    setState(encounter.nextTurn);
+    _audio.playUiCue(enabled: _soundEnabled);
+  }
+
   void _changeHp(String id, int amount, {required bool heal}) {
     final encounter = _encounter;
     if (encounter == null) return;
@@ -153,6 +163,7 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
         encounter.applyDamage(id, amount);
       }
     });
+    _audio.playUiCue(enabled: _soundEnabled);
   }
 
   @override
@@ -165,6 +176,13 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Text('Encounter Sandbox', style: Theme.of(context).textTheme.titleLarge),
           const Text('Encounter checkpoints are separate from character saves and inventory.'),
+          SwitchListTile(
+            key: const Key('encounter-sound-toggle'),
+            title: const Text('Combat UI sounds'),
+            subtitle: const Text('Optional platform click cues; music and voices not installed.'),
+            value: _soundEnabled,
+            onChanged: (enabled) => setState(() => _soundEnabled = enabled),
+          ),
           const SizedBox(height: 12),
           if (encounter == null) ...[
             SwitchListTile(
@@ -297,7 +315,7 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
             ),
             FilledButton(
               key: const Key('next-turn'),
-              onPressed: () => setState(encounter.nextTurn),
+              onPressed: _advanceTurn,
               child: const Text('Next Turn'),
             ),
             TextButton(
