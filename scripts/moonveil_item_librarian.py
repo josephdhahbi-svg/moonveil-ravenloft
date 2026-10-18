@@ -58,7 +58,12 @@ def add(db, items):
     with db:
         for item in items:
             src = item.get("source") or {}
-            db.execute("""INSERT OR IGNORE INTO items
+            existing = db.execute("SELECT id,name,record_json FROM items WHERE id=? OR name=? COLLATE NOCASE", (item["id"], item["name"])).fetchall()
+            if existing:
+                if len(existing) != 1 or existing[0][0] != item["id"] or existing[0][1] != item["name"] or json.loads(existing[0][2]) != item:
+                    raise ValueError("Conflicting existing catalog entry: " + item["id"])
+                continue
+            db.execute("""INSERT INTO items
               (id,name,item_type,rarity,edition,source_title,source_page,verified,
                review_status,record_json) VALUES (?,?,?,?,?,?,?,?,?,?)""",
               (item["id"],item["name"],item["item_type"],item.get("rarity"),
