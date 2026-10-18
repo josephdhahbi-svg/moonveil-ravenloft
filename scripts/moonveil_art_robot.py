@@ -86,6 +86,10 @@ def install(archive):
             for entry in manifest["assets"]
         ],
     }
+    pubspec = FLUTTER / "pubspec.yaml"
+    pubtext = pubspec.read_text(encoding="utf-8")
+    if "  assets:" not in pubtext:
+        raise ValueError("Missing Flutter assets section in pubspec")
     INDEX.parent.mkdir(parents=True, exist_ok=True)
     for name, raw in staged.items():
         target = DEST / name
@@ -93,18 +97,14 @@ def install(archive):
         if not target.exists():
             target.write_bytes(raw)
     INDEX.write_text(json.dumps(index, indent=2) + "\n", encoding="utf-8")
-    pubspec = FLUTTER / "pubspec.yaml"
-    pubtext = pubspec.read_text(encoding="utf-8")
     registrations = [
         "    - assets/images/moonveil_comic/story_panels/",
         "    - assets/images/moonveil_comic/locations/",
         "    - assets/images/moonveil_comic/tokens/",
     ]
-    if "  assets:" not in pubtext:
-        raise ValueError("Missing Flutter assets section in pubspec")
     missing = [line for line in registrations if line not in pubtext]
     if missing:
-        pubspec.write_text(pubtext.rstrip() + "\\n" + "\\n".join(missing) + "\\n",
+        pubspec.write_text(pubtext.rstrip() + "\n" + "\n".join(missing) + "\n",
                            encoding="utf-8")
     print("Installed", len(staged), "verified PNGs and index:", INDEX)
 
