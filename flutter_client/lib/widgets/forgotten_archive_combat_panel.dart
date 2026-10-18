@@ -34,7 +34,9 @@ class _ArchiveCombatState extends State<ForgottenArchiveCombatPanel> {
       guardian.hp = restored;
       if (mounted) setState(() {
         loading = false;
-        status = 'Guardian HP $restored/${guardian.maxHp} · Restored from combat ledger';
+        status = restored == 0
+            ? 'Training guardian defeated · Victory verified from combat ledger'
+            : 'Guardian HP $restored/${guardian.maxHp} · Restored from combat ledger';
       });
     } catch (error) {
       if (mounted) setState(() {
@@ -63,6 +65,7 @@ class _ArchiveCombatState extends State<ForgottenArchiveCombatPanel> {
         await MoonveilArchiveTrainingOutcome(widget.database).recordVictoryIfEarned();
       }
       if (mounted) setState(() => status =
+        !guardian.isAlive ? 'Training guardian defeated · Victory saved' :
         'd20 ${result['d20_roll']} · ${result['hit'] ? 'Hit' : 'Miss'} · '
         'Damage ${result['damage_dealt']} · Guardian HP ${guardian.hp}/8 · Saved');
     } catch (error) {
