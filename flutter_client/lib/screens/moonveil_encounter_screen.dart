@@ -20,6 +20,29 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
   final TextEditingController _enemyAc = TextEditingController(text: '13');
   final TextEditingController _enemyModifier = TextEditingController(text: '2');
   bool _includeEnemy = false;
+  final List<({String name, int hp, int ac, int modifier})> _enemies = [];
+  static const _conditions = <String>[
+    'Blinded', 'Charmed', 'Deafened', 'Exhaustion', 'Frightened',
+    'Grappled', 'Incapacitated', 'Invisible', 'Paralyzed',
+    'Petrified', 'Poisoned', 'Prone', 'Restrained', 'Stunned',
+    'Unconscious',
+  ];
+
+  void _addEnemy() {
+    final name = _enemyName.text.trim();
+    final hp = int.tryParse(_enemyHp.text);
+    final ac = int.tryParse(_enemyAc.text);
+    final modifier = int.tryParse(_enemyModifier.text);
+    if (name.isEmpty || hp == null || hp < 1 || ac == null || ac < 0 ||
+        modifier == null) {
+      setState(() => _message = 'Enter valid enemy name, HP, AC and initiative modifier.');
+      return;
+    }
+    setState(() {
+      _enemies.add((name: name, hp: hp, ac: ac, modifier: modifier));
+      _message = null;
+    });
+  }
   bool _rollInitiative = true;
 
   @override
@@ -55,20 +78,13 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
           characterId: character.characterId,
         ),
       ];
-      if (_includeEnemy) {
-        final name = _enemyName.text.trim();
-        final hp = int.tryParse(_enemyHp.text);
-        final ac = int.tryParse(_enemyAc.text);
-        final modifier = int.tryParse(_enemyModifier.text);
-        if (name.isEmpty || hp == null || hp < 1 || ac == null || ac < 0 || modifier == null) {
-          setState(() => _message = 'Enter valid enemy name, HP, AC and initiative modifier.');
-          return;
-        }
+      for (var i = 0; i < _enemies.length; i++) {
+        final enemy = _enemies[i];
         participants.add(MoonveilCombatant(
-          id: 'enemy-1', name: name,
-          initiativeModifier: modifier,
-          initiative: (_rollInitiative ? _dice.nextInt(20) + 1 : 10) + modifier,
-          maxHp: hp, hp: hp, ac: ac, isEnemy: true,
+          id: 'enemy-${i + 1}', name: enemy.name,
+          initiativeModifier: enemy.modifier,
+          initiative: (_rollInitiative ? _dice.nextInt(20) + 1 : 10) + enemy.modifier,
+          maxHp: enemy.hp, hp: enemy.hp, ac: enemy.ac, isEnemy: true,
         ));
       }
       setState(() {
@@ -126,7 +142,22 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
                   decoration: const InputDecoration(labelText: 'Enemy AC')),
               TextField(controller: _enemyModifier, keyboardType: TextInputType.number,
                   decoration: const InputDecoration(labelText: 'Enemy initiative modifier')),
+              OutlinedButton.icon(
+                key: const Key('add-enemy'),
+                onPressed: _addEnemy,
+                icon: const Icon(Icons.person_add), label: const Text('Queue Enemy'),
+              ),
             ],
+            for (var i = 0; i < _enemies.length; i++)
+              ListTile(
+                key: Key('queued-enemy-${i + 1}'),
+                title: Text('${_enemies[i].name} · HP ${_enemies[i].hp} · AC ${_enemies[i].ac}'),
+                trailing: IconButton(
+                  tooltip: 'Remove queued enemy',
+                  onPressed: () => setState(() => _enemies.removeAt(i)),
+                  icon: const Icon(Icons.close),
+                ),
+              ),
             FilledButton.icon(
               key: const Key('start-encounter'),
               onPressed: _start,
@@ -159,15 +190,33 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
                 ]),
               ),
             for (final combatant in encounter.state)
-              CheckboxListTile(
-                key: Key('poisoned-${combatant.id}'),
-                title: Text('Poisoned: ${combatant.name}'),
-                value: combatant.conditions.contains('Poisoned'),
-                onChanged: (enabled) => setState(() => encounter.setCondition(
-                    combatant.id, 'Poisoned', enabled: enabled ?? false)),
+              ExpansionTile(
+                key: Key('conditions-${combatant.id}'),
+                title: Text('Conditions: ${combatant.name}'),
+                children: [
+                  for (final condition in _conditions)
+                    CheckboxListTile(
+                      key: Key('condition-${combatant.id}-${condition.toLowerCase()}'),
+                      title: Text(condition),
+                      value: combatant.conditions.contains(condition),
+                      onChanged: (enabled) => setState(() => encounter.setCondition(
+                        combatant.id, condition, enabled: enabled ?? false)),
+                    ),
+                ],
               ),
-            Text('History: ${encounter.history.length} events',
-                key: const Key('encounter-history')),
+            ExpansionTile(
+              key: const Key('combat-history'),
+              title: Text('History: ${encounter.history.length} events'),
+              children: [
+                for (final event in encounter.history.reversed)
+                  ListTile(
+                    dense: true,
+                    title: Text('${event['action']} · ${event['actor']}'),
+                    subtitle: Text('Round ${event['round']}'
+                        '${event['amount'] == null ? '' : ' · ${event['amount']}'}'),
+                  ),
+              ],
+            ),
             FilledButton(
               key: const Key('next-turn'),
               onPressed: () => setState(encounter.nextTurn),
