@@ -1,4 +1,6 @@
 import 'dart:convert';
+import '../models/forgotten_archive_consequences.dart';
+
 import 'moonveil_scene_library_screen.dart';
 import 'moonveil_encounter_screen.dart';
 import '../widgets/moonveil_archive_scene_preview.dart';
@@ -355,7 +357,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                                     ),
                                   ),
                                 if (_selectedChoice != null)
-                                  Text('Saved choice: $_selectedChoice. Story consequences are not yet connected to the campaign engine.',
+                                  Text('Saved choice: $_selectedChoice.\n\n${ForgottenArchiveConsequences.describe(_selectedChoice) ?? 'Outcome unavailable.'}',
                                       style: const TextStyle(color: accent)),
                               ],
                             ),
