@@ -19,7 +19,7 @@ void main() {
       type: 'ARCHIVE_TRAINING_ATTACK', payload: {
         'scene': 'forgotten-archive', 'training_only': true,
         'defender_id': ForgottenArchiveReplay.guardianId,
-        'defender_remaining_hp': 5,
+        'defender_remaining_hp': 5, 'damage_dealt': 3,
       });
     await db.close();
     db = await MoonveilDatabase.open('vesper', databasePath: path, factory: databaseFactoryFfi);
@@ -38,7 +38,7 @@ void main() {
         type: 'ARCHIVE_TRAINING_ATTACK', payload: {
           'scene': 'forgotten-archive', 'training_only': true,
           'defender_id': ForgottenArchiveReplay.guardianId,
-          'defender_remaining_hp': hp,
+          'defender_remaining_hp': hp, 'damage_dealt': id == 'one' ? 6 : 0,
         });
     }
     await expectLater(ForgottenArchiveReplay.restoreGuardianHp(db), throwsStateError);
