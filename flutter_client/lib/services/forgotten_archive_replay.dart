@@ -31,7 +31,9 @@ class ForgottenArchiveReplay {
         throw StateError('Unrecognized archive combat event');
       }
       final remaining = payload['defender_remaining_hp'];
-      if (remaining is! int || remaining < 0 || remaining > hp) {
+      final damage = payload['damage_dealt'];
+      if (remaining is! int || damage is! int || damage < 0 ||
+          remaining < 0 || remaining > hp || hp - damage != remaining) {
         throw StateError('Impossible guardian HP transition');
       }
       hp = remaining;
