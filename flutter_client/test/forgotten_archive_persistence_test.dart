@@ -42,7 +42,7 @@ void main() {
     await db.appendEvent(eventId: 'attack-1', actorId: 'vesper-vane',
       type: 'ARCHIVE_TRAINING_ATTACK', payload: {
         'scene': 'forgotten-archive', 'training_only': true,
-        'defender_id': 'archive-training-guardian', 'defender_remaining_hp': 3,
+        'defender_id': 'archive-training-guardian', 'defender_remaining_hp': 3, 'damage_dealt': 5,
       });
     expect((await db.loadCharacter('vesper-vane'))?['hp'], 10);
     expect((await db.events()).length, 1);
