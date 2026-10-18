@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'moonveil_cinematic_scene.dart';
 
 /// A deterministic scene preview for the Forgotten Archive.
 /// Story actions are previews; this widget never mutates campaign storage.
@@ -47,6 +48,17 @@ class MoonveilArchiveScenePreview extends StatelessWidget {
           Text(scene.title, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           Text(scene.story),
+          const SizedBox(height: 12),
+          MoonveilCinematicScene(
+            title: scene.title,
+            captions: [
+              'The forgotten Netherese doorway glows beneath Barovian mist.',
+              scene.story,
+              'A silver thread of the Weave points toward the guarded passage.',
+              'Vesper must choose whether to prepare for the guardian encounter.',
+            ],
+            onContinue: onEncounter,
+          ),
           const SizedBox(height: 12),
           OutlinedButton.icon(
             key: const Key('scene-open-encounter'),
