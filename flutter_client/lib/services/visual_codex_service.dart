@@ -49,10 +49,11 @@ extension VisualCodexAudit on VisualCodexService {
       try {
         final bytes = (await source.load(entry.value)).buffer.asUint8List();
         if (bytes.isEmpty) throw StateError('Empty image');
-        // FNV-1a fingerprint; used only for duplicate detection, not security.
-        var hash = 0xcbf29ce484222325;
+        // 32-bit FNV-1a fingerprint: web-safe integer arithmetic.
+        // Used only for duplicate detection, not security.
+        var hash = 0x811c9dc5;
         for (final byte in bytes) {
-          hash = ((hash ^ byte) * 0x100000001b3) & 0xffffffffffffffff;
+          hash = ((hash ^ byte) * 0x01000193) & 0xffffffff;
         }
         final signature = '${bytes.length}:${hash.toRadixString(16)}';
         final previous = seen[signature];
