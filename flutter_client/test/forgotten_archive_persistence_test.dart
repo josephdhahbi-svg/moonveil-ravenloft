@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moonveil_client/storage/moonveil_database.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -9,7 +10,8 @@ void main() {
 
   test('Archive choices survive reopen without changing snapshot or Alice', () async {
     final factory = databaseFactoryFfi;
-    final path = inMemoryDatabasePath;
+    final temp = await Directory.systemTemp.createTemp('moonveil-choice-test-');
+    final path = '${temp.path}/vesper.db';
     final vesper = await MoonveilDatabase.open('vesper', databasePath: path, factory: factory);
     await vesper.initializeCampaign(displayName: 'Vesper');
     await vesper.saveCharacter(characterId: 'vesper-vane', revision: 1,
@@ -23,6 +25,12 @@ void main() {
     expect(jsonDecode(choices.single['payload_json'] as String)['choice'], 'Lawful Good');
     expect(snapshot?['checkpoint'], 'link-2-sector-d-choice-f');
     await vesper.close();
+    final reopened = await MoonveilDatabase.open('vesper', databasePath: path, factory: factory);
+    expect((await reopened.loadCharacter('vesper-vane'))?['hp'], 10);
+    final savedEvents = await reopened.events();
+    expect(jsonDecode(savedEvents.single['payload_json'] as String)['choice'], 'Lawful Good');
+    await reopened.close();
+    await temp.delete(recursive: true);
   });
 
   test('Training attacks are event-only and never alter saved HP', () async {
