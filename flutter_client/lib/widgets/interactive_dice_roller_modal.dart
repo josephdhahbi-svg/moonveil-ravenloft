@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'moonveil_animated_dice_roller.dart';
 import 'package:flutter/material.dart';
 
 class InteractiveDiceRollerModal extends StatefulWidget {
@@ -17,7 +17,6 @@ class InteractiveDiceRollerModal extends StatefulWidget {
 }
 
 class _DiceState extends State<InteractiveDiceRollerModal> {
-  final _random = Random.secure();
   int? _die;
   int? _roll;
   int _modifier = 0;
@@ -28,12 +27,10 @@ class _DiceState extends State<InteractiveDiceRollerModal> {
     _modifier = widget.modifier;
   }
 
-  void _rollDie(int sides) {
-    setState(() {
-      _die = sides;
-      _roll = _random.nextInt(sides) + 1;
-    });
-  }
+  void _rollDie(int sides) => setState(() {
+    _die = sides;
+    _roll = null;
+  });
 
   @override
   Widget build(BuildContext context) => SafeArea(
@@ -47,6 +44,12 @@ class _DiceState extends State<InteractiveDiceRollerModal> {
             FilledButton.tonal(onPressed: () => _rollDie(sides),
               child: Text('d$sides')),
         ]),
+        if (_die != null)
+          MoonveilAnimatedDiceRoller(
+            key: ValueKey(_die),
+            diceSides: _die!,
+            onRollComplete: (result) => setState(() => _roll = result),
+          ),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           IconButton(onPressed: () => setState(() => _modifier--),
               icon: const Icon(Icons.remove)),
