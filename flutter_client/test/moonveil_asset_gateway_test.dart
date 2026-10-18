@@ -36,7 +36,7 @@ void main() {
     expect(bundle.loads, 1);
     gateway.refresh();
     expect(await gateway.resolve('portraits', 'vesper_nordic'), isNotNull);
-    expect(bundle.loads, 2);
+    expect(bundle.loads, 1); // Flutter CachingAssetBundle retains its string cache.
   });
 
   test('Gateway rejects invalid registry structure', () async {
