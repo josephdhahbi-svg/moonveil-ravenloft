@@ -3,6 +3,12 @@ name: Moonveil Development Web Preview
 # Builds a downloadable preview artifact. Never publishes GitHub Pages.
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - integration/copy-first-audit
+    paths:
+      - 'flutter_client/**'
+      - '.github/workflows/moonveil-development-web-preview.yml'
 
 permissions:
   contents: read
