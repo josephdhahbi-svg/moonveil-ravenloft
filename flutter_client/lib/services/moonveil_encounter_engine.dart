@@ -67,7 +67,7 @@ class MoonveilEncounter {
   int round = 1;
   int turnIndex = 0;
 
-  MoonveilCombatant get active => combatants[turnIndex];
+  MoonveilCombatant get active => _current[turnIndex];
 
   void nextTurn() {
     turnIndex++;
