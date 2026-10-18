@@ -10,11 +10,11 @@ style.textContent='#mv-combat-grid{display:grid;grid-template-columns:repeat(8,m
 document.head.append(style);
 const host=document.querySelector('#story')||document.querySelector('main')||document.body;
 host.append(section);
-let p,hp,enemy,round,log;
+let p,enemy,round,log;
 const walls=new Set(['2,1','2,2','5,3','5,4','3,4']);
 const pos=(x,y)=>x+','+y;
 const dist=(a,b)=>Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
-const rnd=n=>{const a=new Uint32Array(1);if(crypto?.getRandomValues)crypto.getRandomValues(a);else a[0]=Math.floor(Math.random()*4294967295);return a[0]%n+1};
+const rnd=n=>{const a=new Uint32Array(1);if(window.crypto?.getRandomValues)window.crypto.getRandomValues(a);else a[0]=Math.floor(Math.random()*4294967295);return a[0]%n+1};
 function reset(){p={x:1,y:4,hp:12};enemy={x:6,y:1,hp:10};round=1;log='The training sentinel stirs.';render()}
 function render(){
   const grid=section.querySelector('#mv-combat-grid');grid.replaceChildren();
@@ -41,7 +41,7 @@ function enemyTurn(){
 section.querySelector('#mv-combat-actions').addEventListener('click',e=>{
   const button=e.target.closest('[data-mv-action]');if(!button)return;
   const a=button.dataset.mvAction;
-  if(a==='reset'){reset();return}
+  if(a==='reset'){reset();window.MoonveilAudioDirector?.setScene?.('battle');return}
   if(p.hp<=0||enemy.hp<=0){log='Encounter finished. Restart for another battle.';render();return}
   if(a==='attack'){
     if(dist(p,enemy)>4){log='Eldritch Blast is out of training range (4 squares).';render();return}
@@ -58,4 +58,5 @@ section.querySelector('#mv-combat-actions').addEventListener('click',e=>{
   if(enemy.hp>0)enemyTurn();round++;render();
 });
 reset();
+section.addEventListener('focusin',()=>window.MoonveilAudioDirector?.setScene?.('battle'),{once:true});
 })();
