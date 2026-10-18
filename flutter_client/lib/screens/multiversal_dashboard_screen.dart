@@ -1,5 +1,6 @@
 import 'dart:convert';
 import '../widgets/moonveil_fusion_gallery.dart';
+import '../widgets/moonveil_v4_action_gallery.dart';
 import '../widgets/moonveil_image_navigation.dart';
 import 'moonveil_project_context_screen.dart';
 import 'moonveil_master_gui_and_ai_hub.dart';
@@ -64,7 +65,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
     ('Action', 'Advance cautiously through the threshold.'),
   ];
   final ArtProductionService _artProduction = ArtProductionService();
-  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Categories', 'Art Studio', 'Storyboard', 'Modules', 'Command Notes', 'Project Memory', 'Image Navigation', 'Fusion Studio', 'Dice'];
+  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Categories', 'Art Studio', 'Storyboard', 'Modules', 'Command Notes', 'Project Memory', 'Image Navigation', 'V4 Controls', 'Fusion Studio', 'Dice'];
 
   late final Future<PanelArtAudit> _artAudit = VisualCodexAudit.checkUniquePanels();
   MoonveilDatabase? _db;
@@ -241,6 +242,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                       const SizedBox(height: 16),
                       if (_tab == 'Command Notes') ...[
                         const SizedBox(height: 650, child: MoonveilMasterGuiAndAiHub()),
+                      ] else if (_tab == 'V4 Controls') ...[
+                        MoonveilV4ActionGallery(onOpenTab: (tab) => setState(() => _tab = tab)),
                       ] else if (_tab == 'Fusion Studio') ...[
                         const MoonveilFusionGallery(),
                       ] else if (_tab == 'Image Navigation') ...[
