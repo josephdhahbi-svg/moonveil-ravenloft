@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'moonveil_vtt_hud_screen.dart';
+import '../widgets/forgotten_archive_combat_panel.dart';
 import 'package:flutter/material.dart';
 import '../services/multiversal_router_service.dart';
 import '../models/character_profile.dart';
@@ -221,6 +222,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                               ),
                           ]);
                         }),
+                        if (_db != null && _vesper != null)
+                          ForgottenArchiveCombatPanel(database: _db!),
                         const SizedBox(height: 16),
                         Card(
                           color: const Color(0xFF231A3C),
