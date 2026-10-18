@@ -37,7 +37,7 @@ def install(archive: pathlib.Path) -> None:
             info = expected[name]
             if hashlib.sha256(data).hexdigest() != info["sha256"]:
                 raise ValueError("SHA-256 mismatch: " + name)
-            if not data.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):
+            if not data.startswith(bytes([137, 80, 78, 71, 13, 10, 26, 10])):
                 raise ValueError("Invalid PNG signature: " + name)
             target = FLUTTER / relative
             if target.exists() and target.read_bytes() != data:
