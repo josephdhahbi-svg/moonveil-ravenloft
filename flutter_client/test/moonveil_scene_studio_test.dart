@@ -32,8 +32,9 @@ void main() {
     ]) {
       expect(find.text(label), findsOneWidget);
     }
+    await tester.ensureVisible(find.text('4. Utility'));
     await tester.tap(find.text('4. Utility'));
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(find.text('4. Utility (preview selected)'), findsOneWidget);
   });
 }
