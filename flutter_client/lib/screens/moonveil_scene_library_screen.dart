@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/moonveil_scene_stage.dart';
 import '../widgets/moonveil_four_panel_editor.dart';
 import '../widgets/moonveil_battle_board.dart';
+import '../widgets/moonveil_ritual_guide.dart';
 
 /// Preview library for scenery and battles. Selecting a scene never moves
 /// the player, starts combat, or modifies saved campaign state.
@@ -52,6 +53,8 @@ class _MoonveilSceneLibraryScreenState extends State<MoonveilSceneLibraryScreen>
       ),
       const SizedBox(height: 8),
       const MoonveilFourPanelEditor(),
+      const SizedBox(height: 18),
+      const MoonveilRitualGuide(),
       const MoonveilBattleBoard(backgroundAsset: 'assets/images/moonveil_v4/locations/ruins.png', tokens: [MoonveilBattlePlacement(x: 2, y: 2, assetPath: 'assets/images/moonveil_v4/tokens/idle.png', label: 'Vesper Vane'), MoonveilBattlePlacement(x: 7, y: 3, assetPath: 'assets/images/moonveil_v4/summons/skeletons.png', label: 'Skeleton')]),
       const Text('Battle backdrops are visual previews, not tactical maps. '
         'A battle requires a separate grid, tokens, initiative and combat state.'),
