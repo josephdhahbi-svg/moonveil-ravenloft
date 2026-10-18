@@ -26,6 +26,9 @@ jobs:
       - name: Test V4 V5 V6 art robots and storyboard library
         run: python -m unittest scripts.test_install_moonveil_v4 scripts.test_moonveil_script_library scripts.test_moonveil_asset_robot_v6
         working-directory: .
+      - name: Check playable browser JavaScript syntax
+        run: node --check play/moonveil-audio.js && node --check play/moonveil-ravenloft-tables.js
+        working-directory: .
       - name: Resolve packages
         run: flutter pub get
       - name: Analyze Dart
