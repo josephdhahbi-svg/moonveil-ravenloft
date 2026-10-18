@@ -33,6 +33,8 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: Scaffold(
       body: MoonveilEncounterScreen(character: null),
     )));
+    await tester.ensureVisible(find.byKey(const Key('start-encounter')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('start-encounter')));
     await tester.pump();
     await tester.ensureVisible(find.textContaining('Load a verified character', skipOffstage: false));
