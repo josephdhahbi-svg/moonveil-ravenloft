@@ -18,6 +18,9 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Test project memory and task robot
+        run: python -m unittest scripts/test_moonveil_project_memory.py
+        working-directory: .
       - name: Test offline artwork installer
         run: python ../scripts/test_install_archive_art.py
       - name: Resolve packages
