@@ -11,7 +11,7 @@ class ArtProductionDashboardScreen extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text('Art production queue', style: Theme.of(context).textTheme.titleLarge),
-      Text('Approved requests: ${artService.approvedRequestCount} · Awaiting review: ${artService.reviewedCount}'),
+      Text('Approved requests: ${artService.approvedRequestCount} · Reviewed requests: ${artService.reviewedCount}'),
       const Text('Bundled PNG totals require a separate asset audit.'),
       for (final request in artService.queue)
         Card(child: ListTile(
