@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'moonveil_scene_library_screen.dart';
 import 'moonveil_encounter_screen.dart';
+import '../widgets/moonveil_archive_scene_preview.dart';
 import '../widgets/moonveil_fusion_gallery.dart';
 import '../widgets/moonveil_v4_action_gallery.dart';
 import '../widgets/moonveil_v11_inventory_album.dart';
@@ -281,6 +282,10 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                         }),
                         if (_db != null && _vesper != null)
                           ForgottenArchiveCombatPanel(database: _db!),
+                        MoonveilArchiveScenePreview(
+                          choice: _selectedChoice,
+                          onEncounter: () => setState(() => _tab = 'Encounter'),
+                        ),
                         const SizedBox(height: 16),
                         Card(
                           color: const Color(0xFF231A3C),
