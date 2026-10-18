@@ -8,6 +8,7 @@ void main() {
     await tester.pumpWidget(MaterialApp(home: Scaffold(
       body: MoonveilEncounterScreen(character: snapshot),
     )));
+    await tester.ensureVisible(find.byKey(const Key('start-encounter')));
     await tester.tap(find.byKey(const Key('start-encounter')));
     await tester.pump();
     expect(find.textContaining('HP 10/10'), findsOneWidget);
@@ -20,6 +21,7 @@ void main() {
     await tester.tap(find.byKey(const Key('heal-vesper-vane')));
     await tester.pump();
     expect(find.textContaining('HP 9/10'), findsOneWidget);
+    await tester.ensureVisible(find.byKey(const Key('next-turn')));
     await tester.tap(find.byKey(const Key('next-turn')));
     await tester.pump();
     expect(find.textContaining('Round 2'), findsOneWidget);
