@@ -43,6 +43,8 @@ jobs:
         run: |
           test -f play/index.html
           test -s play/living-world.html
+          test -s play/faction-war.html
+          grep -Fq 'faction-war.html' play/living-world.html
           grep -Fq './living-world.html' play/index.html
           for module in moonveil-audio.js moonveil-cinematics.js moonveil-combat.js moonveil-ravenloft-tables.js; do
             test -s "play/$module"
