@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'moonveil_scene_library_screen.dart';
 import 'moonveil_encounter_screen.dart';
 import '../widgets/moonveil_archive_scene_preview.dart';
+import '../services/moonveil_archive_quest_service.dart';
 import '../widgets/moonveil_fusion_gallery.dart';
 import '../widgets/moonveil_v4_action_gallery.dart';
 import '../widgets/moonveil_v11_inventory_album.dart';
@@ -79,6 +80,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
   bool _loading = true;
   String _tab = 'Adventure';
   String? _selectedChoice;
+  Set<String> _archiveObjectives = {};
+  bool _savingObjective = false;
   bool _savingChoice = false;
 
   static int _abilityModifier(Map<String, dynamic>? state) {
@@ -106,6 +109,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
       final inventory = await db.db.query('inventory_entries',
           where: 'campaign_id = ? AND character_id = ?',
           whereArgs: ['vesper', 'vesper-vane']);
+      final objectives = await MoonveilArchiveQuestService(db).completedObjectives();
       final eventRows = await db.events();
       String? savedChoice;
       for (final row in eventRows) {
@@ -125,6 +129,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
         _vesper = character;
         _inventory = inventory;
         _selectedChoice = savedChoice;
+        _archiveObjectives = objectives;
         _loading = false;
         _error = null;
       });
@@ -162,6 +167,22 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
         SnackBar(content: Text('Choice was not saved: $error')));
     } finally {
       if (mounted) setState(() => _savingChoice = false);
+    }
+  }
+
+  Future<void> _completeArchiveObjective(String objective) async {
+    final db = _db;
+    if (db == null || _savingObjective) return;
+    setState(() => _savingObjective = true);
+    try {
+      await MoonveilArchiveQuestService(db).completeObjective(objective);
+      final completed = await MoonveilArchiveQuestService(db).completedObjectives();
+      if (mounted) setState(() => _archiveObjectives = completed);
+    } catch (error) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Objective was not saved: $error')));
+    } finally {
+      if (mounted) setState(() => _savingObjective = false);
     }
   }
 
@@ -285,6 +306,26 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                         MoonveilArchiveScenePreview(
                           choice: _selectedChoice,
                           onEncounter: () => setState(() => _tab = 'Encounter'),
+                        ),
+                        if (_selectedChoice != null) Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              const Text('FORGOTTEN ARCHIVE · QUEST LEDGER'),
+                              const Text('Record an objective only after completing it in play. No rewards or stats are changed.'),
+                              for (final objective in const [
+                                ('guardian_repelled', 'Guardian repelled'),
+                                ('survivor_located', 'Survivor located'),
+                                ('seal_studied', 'Seal studied'),
+                              ]) CheckboxListTile(
+                                key: Key('archive-objective-${objective.$1}'),
+                                title: Text(objective.$2),
+                                value: _archiveObjectives.contains(objective.$1),
+                                onChanged: _savingObjective || _archiveObjectives.contains(objective.$1)
+                                  ? null : (_) => _completeArchiveObjective(objective.$1),
+                              ),
+                            ]),
+                          ),
                         ),
                         const SizedBox(height: 16),
                         Card(
