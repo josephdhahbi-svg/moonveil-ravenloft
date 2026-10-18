@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moonveil · Faction War Table</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,Segoe UI,sans-serif;background:#0b0915;color:#f6efff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#25153d,#0b0915 68%);min-height:100vh}
+main{max-width:1120px;margin:auto;padding:20px}h1{font-size:clamp(1.7rem,5vw,3rem);margin:.25em 0}
+p{color:#d0c3e1;line-height:1.5}.panel{border:1px solid #574475;background:#191329e8;border-radius:15px;padding:16px;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.tile{border:1px solid #675183;border-radius:12px;padding:16px;background:#241a38;min-height:155px}
+.tile h3{margin:0 0 8px}.tag{display:inline-block;border-radius:6px;padding:3px 8px;font-weight:700;font-size:.8rem}
+.BLUE{background:#174877;color:#d3eaff}.RED{background:#682338;color:#ffcfda}.GREEN{background:#1d5b46;color:#d1ffea}
+button,a.action{background:#4c3377;color:white;border:1px solid #a58bd5;border-radius:9px;padding:10px 14px;font:inherit;cursor:pointer;text-decoration:none;display:inline-block}
+button:hover,a.action:hover{background:#684797}button:focus-visible,a:focus-visible{outline:3px solid #ddd1ff;outline-offset:2px}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap}.stat{font-size:1.7rem;font-weight:800;color:#d6bdff}
+.meter{height:10px;background:#0d0b16;border-radius:10px;overflow:hidden;margin:9px 0}.meter span{display:block;height:100%;background:#ae8fff}
+.table-scroll{overflow-x:auto;border:1px solid #574475;border-radius:10px}
+table{width:100%;border-collapse:collapse;min-width:590px}th,td{text-align:left;padding:10px 12px;border-bottom:1px solid #433452;font-size:.91rem}
+th{background:#322448;color:#e8d9ff;position:sticky;top:0}tbody tr:hover{background:#312442}
+.num{text-align:right;font-variant-numeric:tabular-nums}.muted{color:#b8a9cf}
+small{color:#c4b8d7}pre{white-space:pre-wrap;max-height:230px;overflow:auto;color:#d7cbe6;font-size:.83rem}
+</style></head><body><nav style="padding:12px;background:#171422"><a style="color:#dfcfff" href="./living-world.html">← Living World Editor</a> · <a style="color:#dfcfff" href="./index.html">Moonveil Adventure</a></nav><main>
+<header><small>MOONVEIL UNIVERSE · LOCAL WAR TABLE</small><h1>Faction Territory War</h1>
+<p>Explore an illustrative faction war simulation. This browser demonstration is separate from the server's SQLite pulse engine: it does not run hourly in the background, change campaign canon, or synchronize with other players.</p>
+<a class="action" href="living-world.html">← Return to Living World</a> <a class="action" href="adventure-war-room.html">⚔ Adventure War Room</a></header>
+<section class="panel"><h2>World pulse controls</h2><div class="toolbar">
+<button id="pulse">Advance one world pulse</button><button id="export">Export war report</button>
+<button id="reset">Reset demonstration</button></div>
+<p id="status" role="status" aria-live="polite">Ready. No autonomous server scheduler is connected.</p>
+<div class="grid"><div><small>Local pulse count</small><div id="pulseCount" class="stat">0</div></div><div><small>Controlled territories</small><div id="territoryCount" class="stat">0</div></div><div><small>Last pulse</small><div id="lastPulse" class="stat">—</div></div></div></section>
+<section class="panel"><h2>Faction influence</h2><div id="factions" class="grid"></div></section>
+<section class="panel"><h2>Cosmological territories</h2><div id="territories" class="grid"></div></section>
+<section class="panel"><h2>War Room · Strategic Tables</h2>
+<p>Live calculations from this local simulation. These tables are illustrative homebrew, not official campaign outcomes.</p>
+<h3>Table I · Faction power ranking</h3><div class="table-scroll"><table><thead><tr><th>Rank</th><th>Faction</th><th>Moral role</th><th class="num">Influence</th><th class="num">Territories</th><th class="num">Strategic value</th></tr></thead><tbody id="powerTable"></tbody></table></div>
+<h3>Table II · Territory control register</h3><div class="table-scroll"><table><thead><tr><th>Territory</th><th>Cosmological sector</th><th>Controller</th><th class="num">Value</th><th>Threat</th></tr></thead><tbody id="controlTable"></tbody></table></div>
+<h3>Table III · War front and conquest forecast</h3><div class="table-scroll"><table><thead><tr><th>Territory</th><th>Current controller</th><th>Leading challenger</th><th class="num">Influence advantage</th><th>Forecast</th></tr></thead><tbody id="frontTable"></tbody></table></div>
+<h3>Table IV · Supply and strategic resources</h3><div class="table-scroll"><table><thead><tr><th>Faction</th><th class="num">Controlled value</th><th class="num">Supply index</th><th>Logistics status</th></tr></thead><tbody id="supplyTable"></tbody></table></div>
+</section>
+<section class="panel"><h2>War audit journal</h2><pre id="audit">No local pulses yet.</pre></section>
+<script>
+"use strict";
+(()=>{
+const KEY="moonveil-faction-war-demo-v1";
+const seed=()=>({version:1,pulses:0,lastPulse:null,
+ factions:[
+ {id:"eilistraee",name:"Eilistraee's Protectors",alignment:"BLUE",influence:75},
+ {id:"lolth",name:"Lolth's Web",alignment:"RED",influence:68},
+ {id:"ghaunadaur",name:"Ghaunadaur's Cult",alignment:"RED",influence:58},
+ {id:"freefolk",name:"Independent Refugees",alignment:"GREEN",influence:45}],
+ territories:[
+ {id:"pit",name:"Pit of Ghaunadaur",sector:"Underdark",owner:"ghaunadaur",value:20},
+ {id:"hallway",name:"Infinite Hallway",sector:"Planar Threshold",owner:null,value:15},
+ {id:"refuge",name:"Moonlit Refuge",sector:"Underdark",owner:"eilistraee",value:10}],
+ audit:[]});
+const $=id=>document.getElementById(id);
+function valid(s){return s&&s.version===1&&Number.isInteger(s.pulses)&&s.pulses>=0&&
+ Array.isArray(s.factions)&&s.factions.length===4&&Array.isArray(s.territories)&&s.territories.length===3&&
+ Array.isArray(s.audit)&&s.audit.length<=100&&s.factions.every(f=>typeof f.name==="string"&&
+ ["BLUE","RED","GREEN"].includes(f.alignment)&&Number.isInteger(f.influence)&&f.influence>=0&&f.influence<=100)&&
+ s.territories.every(t=>typeof t.name==="string"&&(t.owner===null||s.factions.some(f=>f.id===t.owner)));}
+let state=seed();
+try{const raw=localStorage.getItem(KEY);if(raw){const candidate=JSON.parse(raw);if(valid(candidate))state=candidate;}}catch(_){}
+function node(tag,cls,value){const n=document.createElement(tag);if(cls)n.className=cls;if(value!==undefined)n.textContent=value;return n;}
+function tableRows(id, rows){
+ const body=$(id);body.replaceChildren();
+ for(const cells of rows){const tr=document.createElement("tr");
+ for(const value of cells){const td=node("td","",String(value));tr.append(td);}body.append(tr);}
+}
+function renderWarTables(){
+ const ownerOf=t=>state.factions.find(f=>f.id===t.owner);
+ const ranked=[...state.factions].sort((a,b)=>b.influence-a.influence||a.id.localeCompare(b.id));
+ tableRows("powerTable",ranked.map((f,i)=>[i+1,f.name,f.alignment,f.influence,
+ state.territories.filter(t=>t.owner===f.id).length,
+ state.territories.filter(t=>t.owner===f.id).reduce((sum,t)=>sum+t.value,0)]));
+ tableRows("controlTable",state.territories.map(t=>[t.name,t.sector,
+ ownerOf(t)?.name||"Unclaimed",t.value,
+ ownerOf(t)?.alignment==="RED"?"Hostile":ownerOf(t)?.alignment==="BLUE"?"Protected":"Uncertain"]));
+ tableRows("frontTable",state.territories.map(t=>{
+ const owner=ownerOf(t);const challenger=ranked.find(f=>f.id!==t.owner);
+ const advantage=challenger?challenger.influence-(owner?.influence||0):0;
+ const vulnerable=challenger&&challenger.influence>=65&&advantage>=20;
+ return [t.name,owner?.name||"Unclaimed",challenger?.name||"None",
+ advantage>=0?"+"+advantage:String(advantage),vulnerable?"Capture threshold reached":"Holding"];
+ }));
+ tableRows("supplyTable",ranked.map(f=>{
+ const value=state.territories.filter(t=>t.owner===f.id).reduce((sum,t)=>sum+t.value,0);
+ const supply=Math.min(100,Math.round(f.influence*.6+value*.8));
+ return [f.name,value,supply,supply>=70?"Strong":supply>=40?"Stable":"Strained"];
+ }));
+}
+function render(){
+ $("pulseCount").textContent=String(state.pulses);
+ $("territoryCount").textContent=state.territories.filter(t=>t.owner).length+"/"+state.territories.length;
+ $("lastPulse").textContent=state.lastPulse?new Date(state.lastPulse).toLocaleString():"—";
+ const f=$("factions");f.replaceChildren();
+ for(const x of state.factions){const tile=node("article","tile");tile.append(node("h3","",x.name),node("span","tag "+x.alignment,x.alignment),node("p","", "Influence: "+x.influence+"/100"));
+ const meter=node("div","meter");const fill=node("span");fill.style.width=x.influence+"%";meter.append(fill);tile.append(meter);f.append(tile);}
+ const t=$("territories");t.replaceChildren();
+ for(const x of state.territories){const owner=state.factions.find(f=>f.id===x.owner);const tile=node("article","tile");
+ tile.append(node("h3","",x.name),node("p","",x.sector+" · Strategic value "+x.value));
+ tile.append(node("span",owner?"tag "+owner.alignment:"tag GREEN",owner?owner.name:"Unclaimed"));t.append(tile);}
+ renderWarTables();
+ $("audit").textContent=state.audit.length?state.audit.slice().reverse().map(x=>x.at+" · "+x.message).join("\n"):"No local pulses yet.";
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));render();}
+$("pulse").onclick=()=>{
+ const before=state.factions.map(f=>f.influence);
+ state.factions.forEach(f=>{const delta=Math.floor(Math.random()*11)-5;f.influence=Math.max(0,Math.min(100,f.influence+delta));});
+ const leader=[...state.factions].sort((a,b)=>b.influence-a.influence||a.id.localeCompare(b.id))[0];
+ const changes=[];
+ for(const territory of state.territories){const owner=state.factions.find(f=>f.id===territory.owner);
+ if(leader.id!==territory.owner&&leader.influence>=(owner?owner.influence:0)+20&&leader.influence>=65){
+ changes.push(territory.name+": "+(owner?owner.name:"Unclaimed")+" → "+leader.name);territory.owner=leader.id;}}
+ state.pulses++;state.lastPulse=new Date().toISOString();
+ const diffs=state.factions.map((f,i)=>f.name+" "+(f.influence-before[i]>=0?"+":"")+(f.influence-before[i])).join("; ");
+ state.audit.push({at:state.lastPulse,message:"Pulse "+state.pulses+": "+diffs+(changes.length?" | Captures: "+changes.join("; "):" | No territory captures")});
+ state.audit=state.audit.slice(-100);save();$("status").textContent="Local simulation pulse "+state.pulses+" applied. No server state changed.";
+};
+$("reset").onclick=()=>{if(!confirm("Reset the local faction war demonstration?"))return;state=seed();save();$("status").textContent="Local demonstration reset.";};
+$("export").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=node("a");a.href=url;a.download="moonveil-faction-war-demo.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$("status").textContent="Local war report exported.";};
+render();
+})();
+</script></main></body></html>
