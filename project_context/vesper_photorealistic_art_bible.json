@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "subject": "Vesper Vane",
+  "campaign": "vesper",
+  "style": "strict photorealism",
+  "visual_identity": {
+    "heritage_inspiration": [
+      "Nordic",
+      "London Victorian gothic",
+      "Parisian Belle Epoque gothic",
+      "Transylvanian vampire aristocracy"
+    ],
+    "presentation": "female adult dhampir undead warlock",
+    "face": "pale luminous complexion, elegant angular features, realistic anatomy and skin texture",
+    "hair": "long ash-blonde to silver-blonde hair, naturally textured",
+    "eyes": "cool grey-blue or muted icy blue, subtle supernatural luminescence",
+    "clothing": "tailored black velvet and leather, high lace collar, brocade waistcoat or corseted coat, burgundy silk lining, antique silver filigree, moonstone and sapphire accents, Victorian London tailoring, Parisian gothic couture, Transylvanian aristocratic cape",
+    "accessories": "discreet moon-and-Weave motifs, dark leather gloves, silver clasps, antique jewelry",
+    "avoid": [
+      "anime",
+      "cartoon",
+      "comic illustration",
+      "plastic CGI skin",
+      "oversized fantasy armor",
+      "modern streetwear",
+      "bright neon sci-fi",
+      "emoji icons"
+    ]
+  },
+  "art_requirements": {
+    "character_portraits": "one character per asset; consistent facial identity",
+    "map_tokens": "individual transparent silhouette or portrait token with grid footprint and readable alpha",
+    "interface_buttons": "real cropped photographic or cinematic asset, not emoji or generic icon",
+    "dialogue": "editable text overlay, never embedded in source image",
+    "locations": "photorealistic architectural atmosphere and consistent Barovian geography"
+  },
+  "continuity": {
+    "level": 1,
+    "patron": "Vaelthara, archlich of Mystra",
+    "faith": "Mystra",
+    "checkpoint": "Clockwork Tea-Party Ruins Link 2 Sector D; relic harmonization Choice F complete"
+  },
+  "approval": "Visual identity design specification; not a change to saved character mechanics"
+}
