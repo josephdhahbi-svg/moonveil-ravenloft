@@ -123,4 +123,4 @@ $("reset").onclick=()=>{if(!confirm("Delete local Adventure War Room progress? E
 $("export").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=el("a");a.href=url;a.download="moonveil-adventure-war-room.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$("status").textContent="Local war room report exported.";};
 render();
 })();
-</script></main></body></html>
+</script></main><script src="./moonveil-module-hub.js" defer></script></body></html>
