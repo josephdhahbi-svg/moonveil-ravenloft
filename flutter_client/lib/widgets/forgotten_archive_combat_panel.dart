@@ -1,4 +1,5 @@
 import '../services/forgotten_archive_replay.dart';
+import '../services/moonveil_archive_training_outcome.dart';
 import 'package:flutter/material.dart';
 import '../services/moonveil_combat_engine.dart';
 import '../storage/moonveil_database.dart';
@@ -58,11 +59,21 @@ class _ArchiveCombatState extends State<ForgottenArchiveCombatPanel> {
         eventId: 'archive-training-${DateTime.now().microsecondsSinceEpoch}',
         actorId: 'vesper-vane', type: 'ARCHIVE_TRAINING_ATTACK',
         payload: {'scene': 'forgotten-archive', 'training_only': true, ...result});
+      if (!guardian.isAlive) {
+        await MoonveilArchiveTrainingOutcome(widget.database).recordVictoryIfEarned();
+      }
       if (mounted) setState(() => status =
         'd20 ${result['d20_roll']} · ${result['hit'] ? 'Hit' : 'Miss'} · '
         'Damage ${result['damage_dealt']} · Guardian HP ${guardian.hp}/8 · Saved');
     } catch (error) {
-      guardian.hp = previousHp;
+      // Attack may already be in the ledger if a later victory append fails.
+      // Rebuild from durable events rather than rolling back a saved hit.
+      try {
+        guardian.hp = await ForgottenArchiveReplay.restoreGuardianHp(widget.database);
+      } catch (_) {
+        guardian.hp = previousHp;
+        restoreFailed = true;
+      }
       if (mounted) setState(() => status = 'Attack not saved: $error');
     } finally {
       if (mounted) setState(() => busy = false);
