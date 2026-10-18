@@ -106,7 +106,7 @@ class MoonveilEncounter {
     if (amount < 0) throw ArgumentError('Healing must be nonnegative');
     final index = combatants.indexWhere((c) => c.id == id);
     if (index < 0) throw ArgumentError.value(id, 'id', 'Unknown combatant');
-    final current = combatants[index];
+    final current = _current[index];
     _replace(index, current.copyWith(
       hp: (current.hp + amount).clamp(0, current.maxHp),
     ));
