@@ -34,6 +34,8 @@ void main() {
     )));
     await tester.tap(find.byKey(const Key('start-encounter')));
     await tester.pump();
+    await tester.ensureVisible(find.textContaining('Load a verified character', skipOffstage: false));
+    await tester.pumpAndSettle();
     expect(find.textContaining('Load a verified character'), findsOneWidget);
     expect(find.byKey(const Key('next-turn')), findsNothing);
   });
