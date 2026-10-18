@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'moonveil_project_context_screen.dart';
 import 'moonveil_master_gui_and_ai_hub.dart';
 import 'moonveil_vtt_hud_screen.dart';
 import '../widgets/forgotten_archive_combat_panel.dart';
@@ -61,7 +62,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
     ('Action', 'Advance cautiously through the threshold.'),
   ];
   final ArtProductionService _artProduction = ArtProductionService();
-  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Categories', 'Art Studio', 'Storyboard', 'Modules', 'Command Notes', 'Dice'];
+  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Categories', 'Art Studio', 'Storyboard', 'Modules', 'Command Notes', 'Project Memory', 'Dice'];
 
   late final Future<PanelArtAudit> _artAudit = VisualCodexAudit.checkUniquePanels();
   MoonveilDatabase? _db;
@@ -238,6 +239,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                       const SizedBox(height: 16),
                       if (_tab == 'Command Notes') ...[
                         const SizedBox(height: 650, child: MoonveilMasterGuiAndAiHub()),
+                      ] else if (_tab == 'Project Memory') ...[
+                        const SizedBox(height: 650, child: MoonveilProjectContextScreen()),
                       ] else if (_tab == 'Modules') ...[
                         MultiversalCommandDeckScreen(onOpenTab: (tab) => setState(() => _tab = tab)),
                       ] else if (_tab == 'Adventure') ...[
