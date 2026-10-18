@@ -121,4 +121,4 @@ $("reset").onclick=()=>{if(!confirm("Reset the local faction war demonstration?"
 $("export").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=node("a");a.href=url;a.download="moonveil-faction-war-demo.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$("status").textContent="Local war report exported.";};
 render();
 })();
-</script></main></body></html>
+</script></main><script src="./moonveil-module-hub.js" defer></script></body></html>
