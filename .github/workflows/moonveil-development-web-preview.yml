@@ -35,6 +35,10 @@ jobs:
       - name: Build web preview
         working-directory: flutter_client
         run: flutter build web --release --target lib/preview_main.dart --base-href /moonveil-preview/
+      - name: Install verified reference data into playable browser game
+        run: |
+          mkdir -p play/data
+          cp flutter_client/assets/data/moonveil_verified_context.json play/data/moonveil_verified_context.json
       - name: Verify existing playable browser game
         run: |
           test -f play/index.html
@@ -43,6 +47,9 @@ jobs:
             node --check "play/$module"
             grep -Fq "./$module" play/index.html
           done
+          node --check play/moonveil-reference-sheet.js
+          grep -Fq './moonveil-reference-sheet.js' play/index.html
+          test -s play/data/moonveil_verified_context.json
           grep -Fq 'moonveil-portable-v1' play/index.html
           grep -Fq 'moonveil-vesper-portable-save.json' play/index.html
       - name: Package original playable game and Flutter prototype separately
