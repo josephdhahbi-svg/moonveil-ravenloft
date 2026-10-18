@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../services/moonveil_encounter_codec.dart';
 import '../services/moonveil_encounter_engine.dart';
 
 /// Interactive encounter sandbox. No database or save writes.
@@ -15,6 +17,7 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
   MoonveilEncounter? _encounter;
   String? _message;
   final Random _dice = Random();
+  final TextEditingController _importJson = TextEditingController();
   final TextEditingController _enemyName = TextEditingController(text: 'Skeleton');
   final TextEditingController _enemyHp = TextEditingController(text: '13');
   final TextEditingController _enemyAc = TextEditingController(text: '13');
@@ -47,6 +50,7 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
 
   @override
   void dispose() {
+    _importJson.dispose();
     _enemyName.dispose();
     _enemyHp.dispose();
     _enemyAc.dispose();
@@ -96,6 +100,18 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
     } catch (_) {
       setState(() => _message =
           'Character HP, maximum HP or AC is missing. No values were invented.');
+    }
+  }
+
+  void _restore() {
+    try {
+      final restored = MoonveilEncounterCodec.decode(_importJson.text);
+      setState(() {
+        _encounter = restored;
+        _message = 'Encounter restored from JSON preview. Campaign save unchanged.';
+      });
+    } catch (error) {
+      setState(() => _message = 'Encounter import rejected: $error');
     }
   }
 
@@ -158,6 +174,17 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
                   icon: const Icon(Icons.close),
                 ),
               ),
+            TextField(
+              key: const Key('encounter-import-json'),
+              controller: _importJson,
+              maxLines: 2,
+              decoration: const InputDecoration(labelText: 'Paste encounter JSON to restore'),
+            ),
+            OutlinedButton(
+              key: const Key('restore-encounter'),
+              onPressed: _restore,
+              child: const Text('Restore Encounter JSON'),
+            ),
             FilledButton.icon(
               key: const Key('start-encounter'),
               onPressed: _start,
@@ -216,6 +243,17 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
                         '${event['amount'] == null ? '' : ' · ${event['amount']}'}'),
                   ),
               ],
+            ),
+            OutlinedButton.icon(
+              key: const Key('copy-encounter-json'),
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(
+                  text: MoonveilEncounterCodec.encode(encounter),
+                ));
+                if (mounted) setState(() => _message = 'Encounter JSON copied. Keep it somewhere safe to restore later.');
+              },
+              icon: const Icon(Icons.copy),
+              label: const Text('Copy Encounter JSON'),
             ),
             FilledButton(
               key: const Key('next-turn'),
