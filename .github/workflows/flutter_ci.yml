@@ -18,6 +18,8 @@ jobs:
         with:
           channel: stable
           cache: true
+      - name: Test offline artwork installer
+        run: python ../scripts/test_install_archive_art.py
       - name: Resolve packages
         run: flutter pub get
       - name: Analyze Dart
