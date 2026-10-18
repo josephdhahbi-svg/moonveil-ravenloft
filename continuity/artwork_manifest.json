@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "status": "partial verified entries; source registry has more entries",
+  "assets": [
+    {
+      "path": "game/public/assets/archive_Vesper Vane Gothic Warlock Compendium.png",
+      "bytes": 3079564,
+      "sha256": "b9c840ca2c3037543b41deef820653cf84656fab8a4eb31b50aaebf7238313b1",
+      "source": "Moonveil_Continuity_v3_PLAYABLE.zip",
+      "availability": "original archive; GitHub availability not verified"
+    },
+    {
+      "path": "game/public/assets/art_1.png",
+      "bytes": 2899393,
+      "sha256": "7fd0c98db191e78366713a0be55a728d6d77dba4e38fc9022cdcd4cb0c823954",
+      "source": "Moonveil_Continuity_v3_PLAYABLE.zip",
+      "availability": "original archive; GitHub availability not verified"
+    },
+    {
+      "path": "game/public/assets/archive_Moonveil Ravenloft Campaign Hub.png",
+      "bytes": 2657307,
+      "sha256": "d80818cd3901f07c65a78d4e871575610479fd68841b78205bc855590b240e58",
+      "source": "Moonveil_Continuity_v3_PLAYABLE.zip",
+      "availability": "original archive; GitHub availability not verified"
+    },
+    {
+      "path": "game/public/assets/archive_Barovia - The Forgotten Archive.png",
+      "bytes": 2899393,
+      "sha256": "7fd0c98db191e78366713a0be55a728d6d77dba4e38fc9022cdcd4cb0c823954",
+      "source": "Moonveil_Continuity_v3_PLAYABLE.zip",
+      "availability": "original archive; GitHub availability not verified"
+    }
+  ]
+}
