@@ -2,12 +2,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../services/moonveil_encounter_codec.dart';
+import '../services/moonveil_encounter_store.dart';
 import '../services/moonveil_encounter_engine.dart';
 
-/// Interactive encounter sandbox. No database or save writes.
+/// Encounter sandbox. Checkpoints live in separate campaign-scoped preferences.
 class MoonveilEncounterScreen extends StatefulWidget {
-  const MoonveilEncounterScreen({super.key, required this.character});
+  const MoonveilEncounterScreen({super.key, required this.character,
+    this.campaignId = 'vesper'});
   final Map<String, dynamic>? character;
+  final String campaignId;
 
   @override
   State<MoonveilEncounterScreen> createState() => _MoonveilEncounterScreenState();
@@ -115,6 +118,31 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
     }
   }
 
+  Future<void> _saveCheckpoint() async {
+    final encounter = _encounter;
+    if (encounter == null) return;
+    try {
+      await MoonveilEncounterStore(widget.campaignId).save(encounter);
+      if (mounted) setState(() => _message = 'Encounter checkpoint saved separately from character data.');
+    } catch (error) {
+      if (mounted) setState(() => _message = 'Encounter save failed: $error');
+    }
+  }
+
+  Future<void> _loadCheckpoint() async {
+    try {
+      final encounter = await MoonveilEncounterStore(widget.campaignId).load();
+      if (!mounted) return;
+      setState(() {
+        if (encounter != null) _encounter = encounter;
+        _message = encounter == null ? 'No saved encounter for this campaign.'
+            : 'Saved encounter loaded. Character save unchanged.';
+      });
+    } catch (error) {
+      if (mounted) setState(() => _message = 'Encounter load failed: $error');
+    }
+  }
+
   void _changeHp(String id, int amount, {required bool heal}) {
     final encounter = _encounter;
     if (encounter == null) return;
@@ -136,7 +164,7 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Text('Encounter Sandbox', style: Theme.of(context).textTheme.titleLarge),
-          const Text('Preview only. Does not change campaign saves or inventory.'),
+          const Text('Encounter checkpoints are separate from character saves and inventory.'),
           const SizedBox(height: 12),
           if (encounter == null) ...[
             SwitchListTile(
@@ -179,6 +207,12 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
               controller: _importJson,
               maxLines: 2,
               decoration: const InputDecoration(labelText: 'Paste encounter JSON to restore'),
+            ),
+            OutlinedButton.icon(
+              key: const Key('load-encounter-checkpoint'),
+              onPressed: _loadCheckpoint,
+              icon: const Icon(Icons.folder_open),
+              label: const Text('Load Saved Encounter'),
             ),
             OutlinedButton(
               key: const Key('restore-encounter'),
@@ -243,6 +277,12 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
                         '${event['amount'] == null ? '' : ' · ${event['amount']}'}'),
                   ),
               ],
+            ),
+            FilledButton.icon(
+              key: const Key('save-encounter-checkpoint'),
+              onPressed: _saveCheckpoint,
+              icon: const Icon(Icons.save),
+              label: const Text('Save Encounter Checkpoint'),
             ),
             OutlinedButton.icon(
               key: const Key('copy-encounter-json'),
