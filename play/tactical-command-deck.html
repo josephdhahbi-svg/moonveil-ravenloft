@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moonveil · Tactical Command Deck</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,Segoe UI,sans-serif;background:#090913;color:#f7f0ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#29203d,#090913 80%)}
+main{max-width:1050px;margin:auto;padding:18px}a{color:#c9baff}h1{margin:.4em 0}
+p{line-height:1.5;color:#cbbddd}.panel{background:#1c172c;border:1px solid #6a5487;border-radius:14px;padding:16px;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+input{font:inherit;border:1px solid #8b6caf;border-radius:8px;padding:9px;color:#f9f4ff;background:#35234c}button{font:inherit;cursor:pointer;border-radius:9px;padding:12px;color:#f9f4ff;background:#35234c;border:1px solid #8b6caf}
+button:focus-visible,a:focus-visible{outline:3px solid #f2d78b;outline-offset:3px}
+button:hover{background:#51366b}.macro{display:flex;gap:8px;align-items:stretch}
+.macro button:first-child{flex:1;text-align:left}.pin{min-width:44px}.pinned{border-color:#e5b953}
+.badge{display:inline-block;border-radius:8px;padding:3px 8px;background:#233f5f;color:#bfe3ff}
+#journal{white-space:pre-wrap;max-height:260px;overflow:auto} .row{display:flex;gap:12px;flex-wrap:wrap}
+.stat{flex:1;min-width:140px;background:#29203d;padding:10px;border-radius:9px}
+.small{font-size:.88rem;color:#cbbddd}
+</style></head><body><nav style="padding:12px;background:#171422"><a style="color:#dfcfff" href="./index.html">← Moonveil Adventure</a></nav><main>
+<p><a href="tactical-war-table.html">← Tactical War Table</a> · <a href="index.html">Campaign Hub</a></p>
+<h1>🌙 Omni-Tactical Command Deck</h1>
+<p>Playable local command sandbox. No server connection, microphone recording, official combat automation, or changes to Alice's character sheet.</p>
+<section class="panel"><h2>Quick-access macros</h2><p class="small">Select a command or pin your favorites. Pins persist in this browser only.</p>
+<div class="grid" id="macros"></div><div class="row" style="margin-top:12px"><label>Roll modifier <input id="rollModifier" type="number" min="-10" max="20" value="0" style="width:90px"></label><label>Difficulty class (DC) <input id="rollDC" type="number" min="1" max="40" value="15" style="width:90px"></label></div><p class="small" id="macroHelp">Available commands are clearly marked when not yet connected.</p></section>
+<section class="panel"><h2>⚙️ Glyph Companion — Experimental Sandbox</h2>
+<div class="row"><div class="stat" id="aliceHp"></div><div class="stat" id="glyphHp"></div><div class="stat" id="enemyHp"></div></div>
+<p class="small">Glyph is an optional experimental companion. These prototype actions are not official D&D rules and do not modify your campaign save.</p>
+<p class="small" id="glyphTurn" role="status" aria-live="polite">Round 1 · Action available</p><div class="grid" id="glyphActions"></div><p><button id="nextRound">Next combat round</button> <button id="reset">Reset Glyph sandbox</button></p></section>
+<section class="panel"><h2>Command journal</h2><div id="journal" role="status" aria-live="polite"></div>
+<p><button id="export">Export sandbox JSON</button> <button id="clear">Clear command journal</button></p></section>
+</main><script>
+(()=>{
+"use strict";
+const PIN_KEY="moonveil-command-deck-pins-v1";
+const commands=[
+ ["ROLL_INITIATIVE","🎲 Roll Initiative"],["FAST_TRAVEL","🗺️ Fast Travel (preview)"],
+ ["OPEN_BAZAAR","🛍️ Open Bazaar (preview)"],["CAMP_ROMANCE","💜 Camp Companions (preview)"],
+ ["ATTUNE_ALTAR","✨ Attune Altar (preview)"],["OPEN_TACTICAL_MAP","⚔️ Tactical War Table"]
+];
+const actions=["SUPPORT","ATTACK","DEFEND","CONTROL","SCAN"];
+const implemented=new Set(["ROLL_INITIATIVE","OPEN_TACTICAL_MAP"]);
+const defaults=["ROLL_INITIATIVE","OPEN_TACTICAL_MAP","ATTUNE_ALTAR"];
+const $=id=>document.getElementById(id);
+function loadPins(){try{const p=JSON.parse(localStorage.getItem(PIN_KEY));return Array.isArray(p)?[...new Set(p.filter(x=>commands.some(c=>c[0]===x)))].slice(0,commands.length):defaults.slice();}catch{return defaults.slice();}}
+let pins=loadPins(),journal=[],round=1,actionSpent=false,state={alice:{hp:10,maxHp:30},glyph:{hp:20,maxHp:30},enemy:{hp:9,maxHp:9}};
+function log(message){journal.unshift(new Date().toLocaleTimeString()+" · "+message);journal=journal.slice(0,80);$("journal").textContent=journal.join("\n")||"No actions recorded.";}
+function pin(code){pins=pins.includes(code)?pins.filter(x=>x!==code):[...pins,code];try{localStorage.setItem(PIN_KEY,JSON.stringify(pins));}catch{}renderMacros();}
+function command(code){
+ if(code==="OPEN_TACTICAL_MAP"){location.href="tactical-war-table.html";return;}
+ if(code==="ROLL_INITIATIVE"){const modifier=Number($("rollModifier").value),dc=Number($("rollDC").value);if(!Number.isInteger(modifier)||modifier< -10||modifier>20||!Number.isInteger(dc)||dc<1||dc>40){log("Roll rejected: modifier must be -10..20 and DC must be 1..40.");return;}const roll=Math.floor(Math.random()*20)+1,total=roll+modifier;log("Sandbox d20: "+roll+" + ("+modifier+") = "+total+" vs DC "+dc+" · "+(total>=dc?"SUCCESS":"FAILURE")+" (no campaign effect)");return;}
+ log(code.replaceAll("_"," ")+" is a preview only — no world state or campaign resources changed.");
+}
+function renderMacros(){
+ const root=$("macros");root.replaceChildren();
+ for(const [code,name] of [...commands].sort((a,b)=>Number(pins.includes(b[0]))-Number(pins.includes(a[0])))){
+  const wrap=document.createElement("div");wrap.className="macro";
+  const run=document.createElement("button");run.textContent=name;run.onclick=()=>command(code);run.title=implemented.has(code)?"Interactive local action":"Preview only — no campaign effect";
+  const toggle=document.createElement("button");toggle.className="pin"+(pins.includes(code)?" pinned":"");
+  toggle.textContent=pins.includes(code)?"★":"☆";toggle.setAttribute("aria-label",(pins.includes(code)?"Unpin ":"Pin ")+name);
+  toggle.setAttribute("aria-pressed",String(pins.includes(code)));toggle.onclick=()=>pin(code);
+  wrap.append(run,toggle);root.append(wrap);
+ }
+}
+function renderTurn(){ $("glyphTurn").textContent="Round "+round+" · "+(actionSpent?"Action spent":"Action available");for(const b of $("glyphActions").querySelectorAll("button"))b.disabled=actionSpent||state.glyph.hp<=0;}
+function renderStats(){
+ $("aliceHp").textContent="Alice · "+state.alice.hp+"/"+state.alice.maxHp+" HP";
+ $("glyphHp").textContent="Glyph · "+state.glyph.hp+"/"+state.glyph.maxHp+" HP";
+ $("enemyHp").textContent="Ooze · "+state.enemy.hp+"/"+state.enemy.maxHp+" HP";renderTurn();
+}
+function glyph(action){
+ if(!actions.includes(action)){log("Unknown Glyph action blocked.");return;}
+ if(state.glyph.hp<=0){log("Glyph cannot act.");return;}
+ if(actionSpent){log("Glyph already acted this round. Choose Next combat round.");return;}
+ const roll=Math.floor(Math.random()*6)+1,amount=roll+2;
+ const eligibleSupport=state.alice.hp>0&&state.alice.hp<state.alice.maxHp;
+ const eligibleAttack=state.enemy.hp>0;
+ if(action==="SUPPORT"&&eligibleSupport)state.alice.hp=Math.min(state.alice.maxHp,state.alice.hp+amount);
+ if(action==="ATTACK"&&eligibleAttack)state.enemy.hp=Math.max(0,state.enemy.hp-amount);
+ const description={SUPPORT:eligibleSupport?"Prototype support, up to "+amount+" HP":"No eligible support target",ATTACK:eligibleAttack?"Prototype attack, up to "+amount+" damage":"No living target",DEFEND:"Defensive stance (expires end of round)",CONTROL:"Enemy movement lanes marked (expires end of round)",SCAN:"Scanned nearby hazards"}[action];
+ actionSpent=true;log("Round "+round+" · Glyph "+action+": "+description);renderStats();
+}
+for(const action of actions){const button=document.createElement("button");button.textContent=action;button.onclick=()=>glyph(action);$("glyphActions").append(button);}
+$("nextRound").onclick=()=>{if(round>=100000){log("Round limit reached.");return;}round++;actionSpent=false;renderStats();log("Round "+round+" started; temporary Glyph effects expired.");};
+$("reset").onclick=()=>{round=1;actionSpent=false;state={alice:{hp:10,maxHp:30},glyph:{hp:20,maxHp:30},enemy:{hp:9,maxHp:9}};renderStats();log("Glyph sandbox reset.");};
+$("clear").onclick=()=>{journal=[];log("Command journal cleared.");};
+$("export").onclick=()=>{const data=JSON.stringify({version:2,prototype:true,pins,journal,state,round,actionSpent},null,2);const blob=new Blob([data],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="moonveil-command-deck-sandbox.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+renderMacros();renderStats();log("Local tactical command deck ready.");
+})();
+</script></body></html>
