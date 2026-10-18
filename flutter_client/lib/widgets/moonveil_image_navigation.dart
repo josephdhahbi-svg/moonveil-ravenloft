@@ -25,6 +25,19 @@ class MoonveilImageNavigation extends StatelessWidget {
     ('Allies', 'actions/allies.png', 'Character'),
     ('Factions', 'actions/factions.png', 'Journal'),
     ('Options', 'actions/options.png', 'System Control'),
+    ('Vesper Vane', 'party/vesper_vane.png', 'Character'),
+    ('Alice', 'party/alice.png', 'Character'),
+    ('Starweave', 'party/starweave.png', 'Character'),
+    ('Aasimar Paladin', 'party/aasimar_paladin.png', 'Character'),
+    ('Dr. Frankenstein', 'party/dr_frankenstein.png', 'Character'),
+    ('Death Cleric', 'party/death_cleric.png', 'Character'),
+    ('Spirits Bard', 'party/spirits_bard.png', 'Character'),
+    ('Seraphine', 'party/seraphine.png', 'Character'),
+    ('Thalara', 'party/thalara.png', 'Character'),
+    ('Vesper Ashcroft', 'party/vesper_ashcroft.png', 'Character'),
+    ('Vesper Profile', 'portraits/vesper_profile.png', 'Character'),
+    ('Abbey', 'scenes/abbey_moonlit.png', 'Atlas'),
+    ('Forgotten Archive', 'scenes/forgotten_archive_objective.png', 'Adventure'),
   ];
 
   @override
