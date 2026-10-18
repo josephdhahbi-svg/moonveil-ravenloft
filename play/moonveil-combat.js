@@ -38,9 +38,7 @@ function enemyTurn(){
   }
   if(p.hp===0)log+=' Training defeat — restart to try again.';
 }
-section.querySelector('#mv-combat-actions').addEventListener('click',e=>{
-  const button=e.target.closest('[data-mv-action]');if(!button)return;
-  const a=button.dataset.mvAction;
+function act(a){
   if(a==='reset'){reset();window.MoonveilAudioDirector?.setScene?.('battle');return}
   if(p.hp<=0||enemy.hp<=0){log='Encounter finished. Restart for another battle.';render();return}
   if(a==='attack'){
@@ -56,7 +54,11 @@ section.querySelector('#mv-combat-actions').addEventListener('click',e=>{
     p.x=x;p.y=y;log='Vesper moves '+a+'.';
   }
   if(enemy.hp>0)enemyTurn();round++;render();
-});
+}
+section.querySelector('#mv-combat-actions').addEventListener('click',e=>{const button=e.target.closest('[data-mv-action]');if(button)act(button.dataset.mvAction)});
+section.addEventListener('keydown',e=>{const key={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'}[e.key];if(!key||['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;e.preventDefault();act(key)});
+section.tabIndex=0;
+section.setAttribute('aria-label','Tactical encounter: focus and use arrow keys to move');
 reset();
 section.addEventListener('focusin',()=>window.MoonveilAudioDirector?.setScene?.('battle'),{once:true});
 })();
