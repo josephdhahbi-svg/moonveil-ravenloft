@@ -29,6 +29,9 @@ jobs:
       - name: Verify tests
         working-directory: flutter_client
         run: flutter test
+      - name: Generate web platform scaffold
+        working-directory: flutter_client
+        run: flutter create . --platforms web --project-name moonveil_client
       - name: Build web preview
         working-directory: flutter_client
         run: flutter build web --release --base-href /moonveil-preview/
