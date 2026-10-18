@@ -1,0 +1,22 @@
+[
+  {
+    "topic": "Five ritual deities",
+    "issue": "Earlier 65-slot core roster includes Bahamut while opening ritual includes Tymora",
+    "resolution": "Preserve both as distinct constructs."
+  },
+  {
+    "topic": "90 seats",
+    "issue": "Ninefold Matrix has unassigned cells",
+    "resolution": "Do not claim all deity sheets finished."
+  },
+  {
+    "topic": "Master SQLite DB",
+    "issue": "Mentioned in transcript but file not verified",
+    "resolution": "Do not invent database."
+  },
+  {
+    "topic": "Vesper starting chronology",
+    "issue": "Conflicting origin sequences",
+    "resolution": "Do not force origin."
+  }
+]
