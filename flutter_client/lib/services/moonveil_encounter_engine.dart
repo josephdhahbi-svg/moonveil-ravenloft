@@ -81,7 +81,7 @@ class MoonveilEncounter {
     if (damage < 0) throw ArgumentError('Damage must be nonnegative');
     final index = combatants.indexWhere((c) => c.id == id);
     if (index < 0) throw ArgumentError.value(id, 'id', 'Unknown combatant');
-    final current = combatants[index];
+    final current = _current[index];
     final remaining = (damage - current.temporaryHp).clamp(0, damage);
     final updated = current.copyWith(
       temporaryHp: (current.temporaryHp - damage).clamp(0, current.temporaryHp),
