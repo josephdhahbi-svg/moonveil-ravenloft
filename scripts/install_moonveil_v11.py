@@ -48,8 +48,10 @@ def verify(archive_path):
                 raise ValueError("Image integrity mismatch")
             ids.add(item["id"])
             blobs[item["path"]] = blob
-        if set(archive.namelist()) != set(blobs) | {"manifest.json"}:
+        if set(archive.namelist()) != set(blobs) | {"manifest.json", "README.md"}:
             raise ValueError("Unexpected ZIP contents")
+    if {item["category"] for item in records} != set(CATEGORIES):
+        raise ValueError("Missing V11 album category")
     return manifest, blobs
 
 def install(archive_path):
