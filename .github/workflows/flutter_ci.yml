@@ -1,0 +1,28 @@
+name: Moonveil Flutter checks
+on:
+  push:
+    branches:
+      - 'integration/**'
+  pull_request:
+    branches:
+      - main
+jobs:
+  flutter-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter_client
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Resolve packages
+        run: flutter pub get
+      - name: Analyze Dart
+        run: flutter analyze --no-fatal-infos
+      - name: Run Flutter tests
+        run: flutter test
+      - name: Build web without deployment
+        run: flutter build web --release --base-href "/moonveil-ravenloft/"
