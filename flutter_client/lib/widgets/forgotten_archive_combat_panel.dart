@@ -1,4 +1,4 @@
-import 'dart:convert';
+import '../services/forgotten_archive_replay.dart';
 import 'package:flutter/material.dart';
 import '../services/moonveil_combat_engine.dart';
 import '../storage/moonveil_database.dart';
@@ -29,20 +29,7 @@ class _ArchiveCombatState extends State<ForgottenArchiveCombatPanel> {
 
   Future<void> _restoreGuardian() async {
     try {
-      final rows = await widget.database.events();
-      var restored = guardian.maxHp;
-      for (final row in rows) {
-        if (row['event_type'] != 'ARCHIVE_TRAINING_ATTACK' ||
-            row['actor_id'] != 'vesper-vane') continue;
-        final payload = jsonDecode(row['payload_json'] as String);
-        if (payload is! Map || payload['scene'] != 'forgotten-archive' ||
-            payload['training_only'] != true ||
-            payload['defender_id'] != guardian.id) continue;
-        final hp = payload['defender_remaining_hp'];
-        if (hp is int && hp >= 0 && hp <= guardian.maxHp && hp <= restored) {
-          restored = hp;
-        }
-      }
+      final restored = await ForgottenArchiveReplay.restoreGuardianHp(widget.database);
       guardian.hp = restored;
       if (mounted) setState(() {
         loading = false;
