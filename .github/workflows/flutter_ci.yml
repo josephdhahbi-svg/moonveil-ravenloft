@@ -19,7 +19,7 @@ jobs:
           channel: stable
           cache: true
       - name: Test project memory and task robot
-        run: python -m unittest scripts/test_moonveil_project_memory.py scripts/test_seed_moonveil_project_memory.py scripts/test_moonveil_art_robot.py
+        run: python -m unittest scripts/test_moonveil_project_memory.py scripts/test_seed_moonveil_project_memory.py scripts/test_moonveil_art_robot.py scripts/test_install_moonveil_ui_buttons.py
         working-directory: .
       - name: Test offline artwork installer
         run: python ../scripts/test_install_archive_art.py
