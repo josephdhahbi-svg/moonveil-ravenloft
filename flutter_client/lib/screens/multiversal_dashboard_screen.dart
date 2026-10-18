@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../widgets/archive_observatory_panel.dart';
 import '../widgets/archive_conduit_puzzle_panel.dart';
 import '../models/forgotten_archive_consequences.dart';
 
@@ -308,6 +309,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                           ForgottenArchiveCombatPanel(database: _db!),
                         if (_db != null && _vesper != null)
                           ArchiveConduitPuzzlePanel(database: _db!),
+                        if (_db != null && _vesper != null)
+                          ArchiveObservatoryPanel(database: _db!),
                         MoonveilArchiveScenePreview(
                           choice: _selectedChoice,
                           onEncounter: () => setState(() => _tab = 'Encounter'),
