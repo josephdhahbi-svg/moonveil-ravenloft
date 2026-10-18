@@ -52,7 +52,26 @@ class MoonveilImageNavigation extends StatelessWidget {
       itemCount: destinations.length,
       itemBuilder: (context, i) {
         final (label, file, destination) = destinations[i];
-        final path = 'assets/images/moonveil_ui_buttons/$file';
+        final v3Names = <String, String>{
+          'Locations': 'navigation/maps.png',
+          'People': 'navigation/characters.png',
+          'Items': 'navigation/inventory.png',
+          'Maps': 'navigation/maps.png',
+          'Rest': 'actions/rest.png',
+          'Travel': 'actions/travel.png',
+          'Train': 'actions/train.png',
+          'Craft': 'actions/craft.png',
+          'Research': 'actions/research.png',
+          'Community': 'actions/community.png',
+          'Allies': 'navigation/allies.png',
+          'Factions': 'navigation/factions.png',
+          'Options': 'actions/options.png',
+          'Vesper Vane': 'portraits/vesper_transylvania.png',
+          'Vesper Profile': 'portraits/vesper_nordic.png',
+        };
+        final path = v3Names.containsKey(label)
+            ? 'assets/images/vesper_v3/${v3Names[label]}'
+            : 'assets/images/moonveil_ui_buttons/$file';
         return Semantics(
           button: true,
           label: 'Open $label',
