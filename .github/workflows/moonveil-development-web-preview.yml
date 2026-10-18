@@ -34,7 +34,7 @@ jobs:
         run: flutter create . --platforms web --project-name moonveil_client
       - name: Build web preview
         working-directory: flutter_client
-        run: flutter build web --release --base-href /moonveil-preview/
+        run: flutter build web --release --target lib/preview_main.dart --base-href /moonveil-preview/
       - name: Package preview
         run: tar -czf moonveil-preview-web.tar.gz -C flutter_client/build/web .
       - uses: actions/upload-artifact@v4
