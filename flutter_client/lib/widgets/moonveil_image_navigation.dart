@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'moonveil_asset_button.dart';
 
 /// Clickable artwork-first navigation. Never changes character state.
 /// Each image is optional until the verified PNG pack is installed.
@@ -72,6 +73,15 @@ class MoonveilImageNavigation extends StatelessWidget {
         final path = v3Names.containsKey(label)
             ? 'assets/images/vesper_v3/${v3Names[label]}'
             : 'assets/images/moonveil_ui_buttons/$file';
+        if (v3Names.containsKey(label)) {
+          final parts = v3Names[label]!.split('/');
+          return MoonveilAssetButton(
+            category: parts.first,
+            assetName: parts.last.replaceAll('.png', ''),
+            label: label,
+            onPressed: () => onOpenTab(destination),
+          );
+        }
         return Semantics(
           button: true,
           label: 'Open $label',
