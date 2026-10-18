@@ -153,6 +153,20 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
     _audio.playUiCue(enabled: _soundEnabled);
   }
 
+  Future<void> _loadPreviousCheckpoint() async {
+    try {
+      final previous = await MoonveilEncounterStore(widget.campaignId).loadPrevious();
+      if (!mounted) return;
+      setState(() {
+        if (previous != null) _encounter = previous;
+        _message = previous == null ? 'No previous encounter checkpoint available.'
+            : 'Previous encounter recovered. Current stored checkpoint preserved.';
+      });
+    } catch (error) {
+      if (mounted) setState(() => _message = 'Encounter recovery failed: $error');
+    }
+  }
+
   void _changeHp(String id, int amount, {required bool heal}) {
     final encounter = _encounter;
     if (encounter == null) return;
@@ -231,6 +245,12 @@ class _MoonveilEncounterScreenState extends State<MoonveilEncounterScreen> {
               onPressed: _loadCheckpoint,
               icon: const Icon(Icons.folder_open),
               label: const Text('Load Saved Encounter'),
+            ),
+            OutlinedButton.icon(
+              key: const Key('recover-previous-encounter'),
+              onPressed: _loadPreviousCheckpoint,
+              icon: const Icon(Icons.history),
+              label: const Text('Recover Previous Encounter'),
             ),
             OutlinedButton(
               key: const Key('restore-encounter'),
