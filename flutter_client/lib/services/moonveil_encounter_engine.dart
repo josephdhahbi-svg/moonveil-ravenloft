@@ -72,6 +72,13 @@ class MoonveilEncounter {
   List<Map<String, Object?>> get history =>
       List<Map<String, Object?>>.unmodifiable(_history);
 
+  /// Used only by the validated encounter codec during restore.
+  void restoreHistory(List<Map<String, dynamic>> events) {
+    _history
+      ..clear()
+      ..addAll(events.map((event) => Map<String, Object?>.from(event)));
+  }
+
   void _log(String action, String id, {int? amount}) {
     _history.add({'round': round, 'actor': id, 'action': action,
       if (amount != null) 'amount': amount});
