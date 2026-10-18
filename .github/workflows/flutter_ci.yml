@@ -24,5 +24,7 @@ jobs:
         run: flutter analyze --no-fatal-infos
       - name: Run Flutter tests
         run: flutter test
+      - name: Generate missing Flutter web platform files
+        run: flutter create . --platforms web
       - name: Build web without deployment
         run: flutter build web --release --base-href "/moonveil-ravenloft/"
