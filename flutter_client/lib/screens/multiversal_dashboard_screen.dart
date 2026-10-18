@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'moonveil_scene_library_screen.dart';
 import '../widgets/moonveil_fusion_gallery.dart';
 import '../widgets/moonveil_v4_action_gallery.dart';
+import '../widgets/moonveil_v11_inventory_album.dart';
 import '../widgets/moonveil_image_navigation.dart';
 import 'moonveil_project_context_screen.dart';
 import 'moonveil_master_gui_and_ai_hub.dart';
@@ -66,7 +67,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
     ('Action', 'Advance cautiously through the threshold.'),
   ];
   final ArtProductionService _artProduction = ArtProductionService();
-  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Categories', 'Art Studio', 'Storyboard', 'Modules', 'Command Notes', 'Project Memory', 'Image Navigation', 'V4 Controls', 'Scene Studio', 'Fusion Studio', 'Dice'];
+  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Categories', 'Art Studio', 'Storyboard', 'Modules', 'Command Notes', 'Project Memory', 'Image Navigation', 'V4 Controls', 'V11 Albums', 'Scene Studio', 'Fusion Studio', 'Dice'];
 
   late final Future<PanelArtAudit> _artAudit = VisualCodexAudit.checkUniquePanels();
   MoonveilDatabase? _db;
@@ -245,6 +246,8 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                         const SizedBox(height: 650, child: MoonveilMasterGuiAndAiHub()),
                       ] else if (_tab == 'Scene Studio') ...[
                         const SizedBox(height: 800, child: MoonveilSceneLibraryScreen()),
+                      ] else if (_tab == 'V11 Albums') ...[
+                        const MoonveilV11InventoryAlbum(),
                       ] else if (_tab == 'V4 Controls') ...[
                         MoonveilV4ActionGallery(onOpenTab: (tab) => setState(() => _tab = tab)),
                       ] else if (_tab == 'Fusion Studio') ...[
