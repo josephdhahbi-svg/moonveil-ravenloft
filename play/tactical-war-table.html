@@ -107,4 +107,4 @@ $("defend").onclick=()=>{const u=actor();if(!u||u.side==="RED"){addLog("Only a p
 $("export").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="moonveil-tactical-battle.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 render();
 })();
-</script></body></html>
+</script><script src="./moonveil-module-hub.js" defer></script></body></html>
