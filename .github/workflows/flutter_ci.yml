@@ -27,7 +27,7 @@ jobs:
         run: python -m unittest scripts.test_install_moonveil_v4 scripts.test_moonveil_script_library scripts.test_moonveil_asset_robot_v6
         working-directory: .
       - name: Check playable browser JavaScript syntax
-        run: node --check play/moonveil-audio.js && node --check play/moonveil-ravenloft-tables.js
+        run: node --check play/moonveil-audio.js && node --check play/moonveil-ravenloft-tables.js && node --check play/moonveil-cinematics.js && node --check play/moonveil-combat.js
         working-directory: .
       - name: Resolve packages
         run: flutter pub get
