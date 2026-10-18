@@ -44,6 +44,10 @@ jobs:
           test -f play/index.html
           test -s play/living-world.html
           test -s play/faction-war.html
+          node --check play/moonveil-module-hub.js
+          for page in index.html living-world.html faction-war.html adventure-war-room.html tactical-war-table.html; do
+            grep -Fq './moonveil-module-hub.js' "play/$page"
+          done
           for page in book1.html tactical-war-table.html adventure-war-room.html tactical-command-deck.html; do
             test -s "play/$page"
             grep -Fq "./$page" play/index.html
