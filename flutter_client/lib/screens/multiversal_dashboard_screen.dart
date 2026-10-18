@@ -11,6 +11,8 @@ import '../screens/system_override_control_screen.dart';
 import '../screens/moonveil_category_browser.dart';
 import '../screens/art_production_dashboard_screen.dart';
 import '../services/art_production_service.dart';
+import '../models/cinematic_storyboard_model.dart';
+import '../widgets/cinematic_storyboard_widget.dart';
 import '../screens/multiversal_command_deck_screen.dart';
 import '../services/visual_codex_service.dart';
 import '../storage/moonveil_database.dart';
@@ -57,7 +59,7 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
     ('Action', 'Advance cautiously through the threshold.'),
   ];
   final ArtProductionService _artProduction = ArtProductionService();
-  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Categories', 'Art Studio', 'Modules', 'Dice'];
+  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Categories', 'Art Studio', 'Storyboard', 'Modules', 'Dice'];
 
   late final Future<PanelArtAudit> _artAudit = VisualCodexAudit.checkUniquePanels();
   MoonveilDatabase? _db;
@@ -259,6 +261,22 @@ class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
                         const Text('Campaign journal integration pending; no events fabricated.'),
                       ] else if (_tab == 'Categories') ...[
                         if (_db != null) MoonveilCategoryBrowser(database: _db!),
+                      ] else if (_tab == 'Storyboard') ...[
+                        SizedBox(height: 680, child: CinematicStoryboardWidget(
+                          scene: CinematicScene(
+                            sceneId: 'archive_preview',
+                            title: 'Forgotten Archive — Preview (not saved)',
+                            panels: const [
+                              CinematicPanel(panelIndex: 1, caption: 'The silver threshold', assetPath: 'assets/images/panels/archive_threshold.png'),
+                              CinematicPanel(panelIndex: 2, caption: 'Vaelthara watches', assetPath: 'assets/images/panels/vaelthara_warning.png'),
+                              CinematicPanel(panelIndex: 3, caption: 'Three relics resonate', assetPath: 'assets/images/panels/relic_resonance.png'),
+                              CinematicPanel(panelIndex: 4, caption: 'The archive awakens', assetPath: 'assets/images/panels/archive_awakens.png'),
+                            ],
+                            decisionChoices: const ['Lawful Good — protect the archive', 'Neutral Good — seek survivors', 'Chaotic Good — challenge the seal', 'Utility — investigate the runes', 'Action — advance cautiously'],
+                          ),
+                          onChoiceSelected: (index) => ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Storyboard preview only — campaign state unchanged'))),
+                        )),
                       ] else if (_tab == 'Art Studio') ...[
                         ArtProductionDashboardScreen(artService: _artProduction),
                       ] else if (_tab == 'System Control') ...[
