@@ -69,9 +69,10 @@ class _PreviewTabletopState extends State<PreviewTabletop> {
       const Divider(),
       const Text('Archive approach — select one'),
       for (final option in ['Lawful Good', 'Neutral Good', 'Chaotic Good', 'Utility', 'Action'])
-        RadioListTile<String>(title: Text(option), value: option, groupValue: choice,
-          onChanged: (v) => setState(() {
-            choice = v!;
+        ListTile(title: Text(option), leading: Icon(choice == option
+          ? Icons.radio_button_checked : Icons.radio_button_unchecked),
+          onTap: () => setState(() {
+            choice = option;
             log.insert(0, 'Preview choice: $choice');
           })),
       const Divider(),
