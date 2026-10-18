@@ -9,6 +9,7 @@ void main() {
       body: MoonveilEncounterScreen(character: snapshot),
     )));
     await tester.ensureVisible(find.byKey(const Key('start-encounter')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('start-encounter')));
     await tester.pump();
     expect(find.textContaining('HP 10/10'), findsOneWidget);
