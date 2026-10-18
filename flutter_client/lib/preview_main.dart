@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'widgets/moonveil_cinematic_scene.dart';
 
 /// Isolated browser preview. Never opens, resets, or writes campaign databases.
 /// The production app entrypoint remains lib/main.dart.
