@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: moonveil-universe
+    runtime: node
+    plan: starter
+    buildCommand: npm test
+    startCommand: node server/server.mjs
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: MOONVEIL_DATA_DIR
+        value: /var/data/moonveil
+      - key: MOONVEIL_PLAYER_TOKEN
+        sync: false
+      - key: MOONVEIL_DM_TOKEN
+        sync: false
+    disk:
+      name: moonveil-saves
+      mountPath: /var/data
+      sizeGB: 1
