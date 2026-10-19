@@ -23,3 +23,24 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)void moonv
 window.addEventListener('online',()=>{void moonveilSafeAutoCheck();});
 input.addEventListener('change',()=>{void moonveilSafeAutoCheck();}); 
 const cloudPanelSafetyStyle=document.createElement('style');cloudPanelSafetyStyle.textContent='@media (max-width: 800px) { #moonveil-cloud-controls:has(details[open]) { top: 8px !important; bottom: auto !important; max-height: 42vh; overflow-y: auto; } }';document.head.append(cloudPanelSafetyStyle);
+/* Recovery export: independent of server availability and cloud revision. */
+const moonveilExportButton=document.createElement('button');
+moonveilExportButton.id='moonveil-cloud-export-local';
+moonveilExportButton.type='button';
+moonveilExportButton.textContent='Export local backup';
+el.querySelector('details').insertBefore(moonveilExportButton,el.querySelector('#moonveil-cloud-status'));
+moonveilExportButton.addEventListener('click',()=>{
+ try{
+  const raw=localStorage.getItem(KEY);
+  if(!raw)throw Error('No local game to export');
+  const game=JSON.parse(raw);
+  if(!game||typeof game!=='object'||!game.hero)throw Error('Local save is invalid');
+  const blob=new Blob([JSON.stringify(game,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='moonveil-local-recovery-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json';
+  document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  status('Local backup exported; cloud save unchanged.');
+ }catch(error){status(error.message);}
+});
