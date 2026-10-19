@@ -44,7 +44,7 @@ export function createHandler({playerToken,dmToken,storageDir,serveStatic=true}=
   const url=new URL(req.url,'http://moonveil.local');
   // Unauthenticated readiness probe contains no save or account information.
   if(url.pathname==='/healthz'&&req.method==='GET')return reply(res,200,{ok:true});
-  if(url.pathname==='/openapi.json'&&req.method==='GET')return reply(res,200,dmOpenApi());
+  if(url.pathname==='/openapi.json'&&req.method==='GET'){const base=process.env.MOONVEIL_PUBLIC_URL || (process.env.NODE_ENV==='production'?'':'http://127.0.0.1:4330'); if(!base)return reply(res,503,{error:'Public HTTPS connector URL not configured'}); if(process.env.NODE_ENV==='production'&&!/^https:\/\/[^\s/]+\/?$/.test(base))return reply(res,503,{error:'Public connector URL must be HTTPS'}); return reply(res,200,dmOpenApi(base.replace(/\/$/,'')));}
   if(url.pathname.startsWith('/api/')){
    const isPlayer=eqToken((req.headers.authorization||'').replace(/^Bearer /,''),playerToken);
    const isDM=eqToken((req.headers.authorization||'').replace(/^Bearer /,''),dmToken);
