@@ -84,3 +84,5 @@ button:active:not(:disabled){filter:brightness(1.13)}
 @media(max-width:800px){.topnav{display:flex;overflow-x:auto;gap:4px;padding:6px 0}.topnav button{font-size:10px;padding:8px 10px}.mobile-nav{overflow-x:auto;justify-content:flex-start}.mobile-nav button{flex-shrink:0;min-width:55px}.atlas-map{min-height:390px}.battle-board{min-height:0;aspect-ratio:1}}
 
 .device-card{padding:20px 0;border-bottom:1px solid #53616c55}.device-card h3{margin:8px 0}.device-card button{margin:8px 8px 0 0}.device-address{display:block;padding:14px;border:1px solid #675a41;border-radius:8px;color:var(--gold);overflow-wrap:anywhere}
+
+.play-prompt{box-sizing:border-box;display:block;width:100%;padding:14px;margin:12px 0;background:#101b24;color:#eee4d3;border:1px solid #655b49;border-radius:9px;font:14px/1.6 system-ui;resize:vertical}
