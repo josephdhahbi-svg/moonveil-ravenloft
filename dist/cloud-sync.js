@@ -21,4 +21,5 @@ async function moonveilSafeAutoCheck(){
 window.setInterval(moonveilSafeAutoCheck,60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)void moonveilSafeAutoCheck();});
 window.addEventListener('online',()=>{void moonveilSafeAutoCheck();});
-input.addEventListener('change',()=>{void moonveilSafeAutoCheck();});
+input.addEventListener('change',()=>{void moonveilSafeAutoCheck();}); 
+const cloudPanelSafetyStyle=document.createElement('style');cloudPanelSafetyStyle.textContent='@media (max-width: 800px) { #moonveil-cloud-controls:has(details[open]) { top: 8px !important; bottom: auto !important; max-height: 42vh; overflow-y: auto; } }';document.head.append(cloudPanelSafetyStyle);
