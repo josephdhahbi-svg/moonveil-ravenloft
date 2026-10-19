@@ -19,6 +19,12 @@ jobs:
           node-version: '22'
       - name: Verify DM authorization, cloud revision conflicts and preservation
         run: node --test tests/server-auth-conflicts.test.mjs tests/mobile-offline-assets.test.mjs
+      - name: Install headless Chromium test runtime
+        run: |
+          npm install --no-save --no-package-lock playwright-core@1.58.2
+          npx playwright-core install --with-deps chromium
+      - name: Run Android-sized Chromium offline and cinematic image smoke test
+        run: node --test tests/chromium-android-offline.test.mjs
       - name: Verify saved artwork and original files remain tracked
         run: |
           git ls-files > tracked-files.txt
