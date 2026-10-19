@@ -3,3 +3,22 @@ const moonveilCloudMobileStyle=document.createElement('style');moonveilCloudMobi
 
 const cloudCheckButton=document.createElement('button');cloudCheckButton.id='moonveil-cloud-check';cloudCheckButton.type='button';cloudCheckButton.textContent='Check cloud updates';el.querySelector('details').insertBefore(cloudCheckButton,el.querySelector('#moonveil-cloud-status'));
 cloudCheckButton.addEventListener('click',async()=>{const known=sessionStorage.getItem(REV);try{if(!input.value)throw Error('Enter a player token first');const response=await fetch(api,{headers:{Authorization:'Bearer '+input.value},cache:'no-store'});const record=await response.json();if(!response.ok)throw Error(record.error||'Cloud check failed');status(known===null?'Cloud revision '+record.revision+' available. Download to load it.':Number(record.revision)>Number(known)?'Cloud has newer changes (revision '+record.revision+'). Download to review and load.':'Cloud has no newer revision.');}catch(error){status(error.message)}});
+let moonveilAutoCheckBusy=false;
+async function moonveilSafeAutoCheck(){
+ if(moonveilAutoCheckBusy||document.hidden||!navigator.onLine||!input.value)return;
+ moonveilAutoCheckBusy=true;
+ try{
+  const response=await fetch(api,{headers:{Authorization:'Bearer '+input.value},cache:'no-store'});
+  if(!response.ok)return;
+  const record=await response.json();
+  const known=sessionStorage.getItem(REV);
+  if(known!==null&&Number(record.revision)>Number(known)){
+   el.dataset.cloudUpdateAvailable='true';
+   status('Cloud has newer changes (revision '+record.revision+'). Review and download when ready.');
+  }else{delete el.dataset.cloudUpdateAvailable;}
+ }catch(_error){}finally{moonveilAutoCheckBusy=false;}
+}
+window.setInterval(moonveilSafeAutoCheck,60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)void moonveilSafeAutoCheck();});
+window.addEventListener('online',()=>{void moonveilSafeAutoCheck();});
+input.addEventListener('change',()=>{void moonveilSafeAutoCheck();});
