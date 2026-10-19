@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '22'
       - name: Verify DM authorization, cloud revision conflicts and preservation
-        run: node --test tests/server-auth-conflicts.test.mjs
+        run: node --test tests/server-auth-conflicts.test.mjs tests/mobile-offline-assets.test.mjs
       - name: Verify saved artwork and original files remain tracked
         run: |
           git ls-files > tracked-files.txt
