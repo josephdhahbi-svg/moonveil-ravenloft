@@ -1,5 +1,5 @@
-import {effectivePlace} from './scene-director.js?v=20261018-dm1';
-import * as E from './engine.js?v=20261018-dm1';
+import {effectivePlace} from './scene-director.js?v=20261018-dm2';
+import * as E from './engine.js?v=20261018-dm2';
 import {PLACES,QUESTS,ITEMS} from './world.js';
 export const ACTIONS=['travel','explore','talk','dialogue_next','accept','complete','start_combat','move','select_enemy','attack','end_turn','guard','companion','loot','rest','retreat','view','buy','use_potion'];
 export function performAction(s,input){

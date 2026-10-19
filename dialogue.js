@@ -1,4 +1,4 @@
-import {dialogueOverride,scenePhase} from './scene-director.js?v=20261018-dm1';
+import {dialogueOverride,scenePhase} from './scene-director.js?v=20261018-dm2';
 // Original Moonveil dialogue. Quest state controls what each keeper remembers.
 const LINES={
  'lost-light':{accepted:['The watchtower bell is calling again. Follow the Mourning Road; bring the silver lens home.','Find the lens in the Hollow Watchtower. Come back to Lanternfall when the road is clear.'],return:['That silver light… you found our keeper’s lens. Let us raise the beacon again.','Close this conversation and return the lens using the quest action. Your promised reward is ready.'],complete:['The beacon burns because of you. Tonight, someone will find their way home.','Stay for a warm meal, or follow another road. Lanternfall remembers its friends.']},

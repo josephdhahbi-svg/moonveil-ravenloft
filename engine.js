@@ -1,4 +1,4 @@
-import {validateScenes} from './scene-director.js?v=20261018-dm1';
+import {validateScenes} from './scene-director.js?v=20261018-dm2';
 import {PATRONS,PROFESSIONS} from './life-data.js';
 import {PLACES,QUESTS,ITEMS,CLASSES} from './world.js';
 import {resolveD20,shortestRoute} from './vendor/moonveil-rules.js';

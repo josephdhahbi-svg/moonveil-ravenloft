@@ -1,0 +1,16 @@
+MOONVEIL — PHONE: START HERE
+
+1. Keep Moonveil-Universe-Game.zip as your game/artwork package. Extract it to inspect its files. This ZIP is not an Android APK; opening game/index.html directly on your phone is not the supported play method.
+2. Open the same game website in Chrome on Android:
+https://josephdhahbi-svg.github.io/moonveil-ravenloft/
+3. Create a new character, or import your exported Moonveil save from Settings. Each browser has its own save.
+4. For chat play, open ChatGPT alongside the game and paste the message below. In Moonveil, Game Master > Play together > ChatGPT play instructions also contains a prompt.
+5. To edit while playing, use Game Master > Scene Director. Save scene edits with a note; Undo last scene edit restores the previous version. Export the character save to carry these edits to another device.
+
+MESSAGE TO CHATGPT ON MY PHONE
+
+We are playing my existing cinematic Moonveil Universe. Use the attached Moonveil-Universe-Game.zip as source material when it is available to you, and use the game interface at https://josephdhahbi-svg.github.io/moonveil-ravenloft/ for play. Do not create a replacement game or use the old purple Ravenloft interface.
+
+Be my DM. First check whether you can access the current game through connected browser/site tools. If you can, read my saved character and scene, perform my requested actions using the game controls, and verify each result. Use the Scene Director to save agreed scene or NPC dialogue edits while we play; preserve original content and quest rewards.
+
+If you cannot control or see my separate phone browser, tell me clearly. Narrate in chat, tell me exactly which visible buttons to tap, and wait for the result. Use the scene, screenshot or save information I supply. Do not pretend the ZIP alone connects ChatGPT to the live game, or that saves synchronize automatically. Keep our story cinematic, preserve progress, and distinguish D&D rules from Moonveil homebrew.
