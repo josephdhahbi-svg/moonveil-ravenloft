@@ -1,4 +1,5 @@
-import * as E from './engine.js';
+import {effectivePlace} from './scene-director.js?v=20261018-dm1';
+import * as E from './engine.js?v=20261018-dm1';
 import {PLACES,QUESTS,ITEMS} from './world.js';
 export const ACTIONS=['travel','explore','talk','dialogue_next','accept','complete','start_combat','move','select_enemy','attack','end_turn','guard','companion','loot','rest','retreat','view','buy','use_potion'];
 export function performAction(s,input){
@@ -22,7 +23,7 @@ export function performAction(s,input){
  case 'retreat':return E.retreat(s);
  case 'buy':return E.buy(s,input.itemId);
  case 'use_potion':return E.usePotion(s);
- case 'view':if(!['journey','atlas','character','inventory','codex','guide','battle','life'].includes(input.view))throw Error('Unknown view.');if(input.sheet!==undefined){if(input.view!=='life'||!['quest-sheet','profession-sheet','devotion-sheet','spell-sheet','ritual-sheet'].includes(input.sheet))throw Error('Choose a known World sheet.');s.lifeSheet=input.sheet;}s.view=input.view;return;
+ case 'view':if(!['journey','atlas','character','inventory','codex','guide','battle','life'].includes(input.view))throw Error('Unknown view.');if(input.sheet!==undefined){if(input.view!=='life'||!['quest-sheet','profession-sheet','devotion-sheet','spell-sheet','ritual-sheet'].includes(input.sheet))throw Error('Choose a known World sheet.');s.lifeSheet=input.sheet;}if(input.guideTab!==undefined){if(input.view!=='guide'||!['together','director','notebook','wayfinder'].includes(input.guideTab))throw Error('Choose a known Game Master section.');s.guideTab=input.guideTab;}s.view=input.view;return;
  }
 }
 export function addSessionNote(s,input){
@@ -32,4 +33,4 @@ export function addSessionNote(s,input){
  s.notes||=[];if(s.notes.length>=500)throw Error('The notebook is full. Export your save before beginning another volume.');
  const note={id:crypto.randomUUID(),author:input.author,text,location:s.location,tick:s.tick};s.notes.push(note);return note;
 }
-export function readSession(s){if(!s)return{character:null};const p=PLACES.find(p=>p.id===s.location);return{hero:s.hero,location:s.location,currentPlace:p,places:PLACES,quests:s.quests,questDefinitions:QUESTS,inventory:s.inventory,itemDefinitions:ITEMS,battle:s.battle,loot:s.loot,dialogue:s.dialogue,companion:s.companion,profession:s.profession||null,devotion:s.devotion||{},worldFlags:s.flags,notes:s.notes||[],recentEvents:s.events.slice(0,12),view:s.view,revision:s.revision};}
+export function readSession(s){if(!s)return{character:null};const p=PLACES.find(p=>p.id===s.location);return{hero:s.hero,location:s.location,currentPlace:effectivePlace(s,p),sceneOverrides:s.sceneOverrides||{},sceneEditHistory:s.sceneEditHistory||[],places:PLACES.map(p=>effectivePlace(s,p)),quests:s.quests,questDefinitions:QUESTS,inventory:s.inventory,itemDefinitions:ITEMS,battle:s.battle,loot:s.loot,dialogue:s.dialogue,companion:s.companion,profession:s.profession||null,devotion:s.devotion||{},worldFlags:s.flags,notes:s.notes||[],recentEvents:s.events.slice(0,12),view:s.view,revision:s.revision};}
