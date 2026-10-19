@@ -1,0 +1,26 @@
+{
+  "assets": [
+    {
+      "id": "generated-cthulhu",
+      "label": "Cthulhu and the Drowned Causeway",
+      "category": "generated domains",
+      "path": "assets/moonveil-cthulhu.png",
+      "sourceArchive": "Moonveil generated artwork \u00b7 October 18, 2026",
+      "origin": "generated",
+      "sourceEntry": "exec-2620f559-d0db-4fef-8563-e88c479af583.png",
+      "sha256": "a0763f2d1b807406d7f4a5ae8db554804327332d33fdb6a996171ecd67100512",
+      "bytes": 2874437
+    },
+    {
+      "id": "generated-nodens",
+      "label": "Nodens of the Silver Tide",
+      "category": "generated domains",
+      "path": "assets/moonveil-nodens.png",
+      "sourceArchive": "Moonveil generated artwork \u00b7 October 18, 2026",
+      "origin": "generated",
+      "sourceEntry": "exec-ab59012a-7841-45cf-a158-5acafcc50cc8.png",
+      "sha256": "f9a74856ef23e43e6e66748c7b2c26c4be1e50b8deb32e230e3f1bb3a62318aa",
+      "bytes": 3021597
+    }
+  ]
+}

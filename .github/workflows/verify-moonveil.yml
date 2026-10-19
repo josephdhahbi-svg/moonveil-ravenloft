@@ -1,0 +1,19 @@
+name: Moonveil full release verification
+on:
+  push:
+    branches: [moonveil-full-pwa-deploy]
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Require complete existing PWA assets
+        run: node verify-release.mjs
+      - name: Run existing game and API tests
+        run: npm test
