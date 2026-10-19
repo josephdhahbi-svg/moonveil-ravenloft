@@ -1,0 +1,28 @@
+name: Moonveil secure save and DM regression
+on:
+  push:
+    branches:
+      - main
+      - 'continue/**'
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  secure-save-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify DM authorization, cloud revision conflicts and preservation
+        run: node --test tests/server-auth-conflicts.test.mjs
+      - name: Verify saved artwork and original files remain tracked
+        run: |
+          git ls-files > tracked-files.txt
+          test -s tracked-files.txt
+          test -f server/server.mjs
+          test -f dist/engine.js
+          test -f index.html
