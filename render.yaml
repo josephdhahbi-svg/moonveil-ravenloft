@@ -3,7 +3,7 @@ services:
     name: moonveil-universe
     runtime: node
     plan: starter
-    buildCommand: npm test
+    buildCommand: node verify-release.mjs && npm test
     startCommand: node server/server.mjs
     healthCheckPath: /healthz
     envVars:
