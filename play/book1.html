@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moonveil VTT — Book 1: The Pit of Ghaunadaur</title>
+<style>
+:root{color-scheme:dark;--bg:#10101c;--panel:#1b1b2b;--line:#494665;--ink:#f4f1ff;--muted:#c4bfd8;--violet:#9a83f5;--gold:#e6c17a;--green:#a7e3bd}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#25203d,var(--bg) 55%);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+main{max-width:1000px;margin:auto;padding:24px}h1,h2,h3{line-height:1.2}h1{font-size:clamp(1.8rem,5vw,3rem);margin-bottom:6px}h2{font-size:1.3rem;margin-top:0}.eyebrow{color:var(--gold);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.78rem}
+.intro{color:var(--muted);max-width:72ch}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.panel,.choice{background:rgba(27,27,43,.94);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}.gift{border-left:3px solid var(--violet);padding:10px 12px;background:#222139;border-radius:8px;margin:10px 0}.gift strong{display:block}.gift small{color:var(--muted)}
+label{display:block;margin:10px 0;color:var(--muted)}input,button{font:inherit;border-radius:9px;border:1px solid #716b91;padding:10px;background:#28263c;color:var(--ink)}input{max-width:100%;width:100%}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}.choice{margin:0;text-align:left;display:block;width:100%;transition:border-color .15s,transform .15s}.choice:hover{border-color:var(--violet);transform:translateY(-1px)}.choice[aria-pressed="true"]{border:2px solid var(--gold);background:#302945}.choice .kind{font-size:.75rem;color:var(--gold);text-transform:uppercase;letter-spacing:.08em}.choice strong{display:block;margin:4px 0}.choice span{color:var(--muted);font-size:.92rem}.choice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.primary{background:#5b45a7;border-color:#a18bf7;font-weight:700}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.row label{flex:1;min-width:130px}.status{min-height:1.5em;color:var(--green)}.roll{font-size:3rem;font-weight:800;color:var(--gold)}.log{white-space:pre-wrap;color:var(--muted);max-height:240px;overflow:auto}.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:3px 9px;margin:3px;font-size:.78rem;color:var(--muted)}footer{color:var(--muted);font-size:.85rem;margin-top:24px}
+</style>
+</head>
+<body><nav style="padding:12px;background:#171422"><a style="color:#dfcfff" href="./index.html">← Moonveil Adventure</a></nav><main>
+<header>
+ <div class="eyebrow">Moonveil Universe · Interactive Prototype</div>
+ <h1>Book 1: The Pit of Ghaunadaur</h1>
+ <p class="intro">Scene 1 — The Rabbit Hole: First Breath in the Pit. Choose Alice's first response, roll the proposed check, and save the result locally in this browser. This is a prototype, not a full D&D rules engine.</p>
+</header>
+<section class="panel">
+ <h2>Alice Z'ress — Origin Gifts</h2>
+ <p class="intro">These three gifts are custom narrative events from Alice's origin. They are not automatically equivalent to ordinary feat choices or spellcasting features.</p>
+ <div class="grid">
+  <div class="gift"><strong>🛡️ Mystra's Shield</strong><small>A brief protective ward surrounds Alice during the fall. Numeric effects and duration remain unapproved.</small></div>
+  <div class="gift"><strong>🧪 Ghaunadaur's Acid Splash</strong><small>Acid manifests as Alice reaches the Pit. Ordinary spell rules apply only if separately granted.</small></div>
+  <div class="gift"><strong>✨ Eilistraee's Light</strong><small>Moonlight illuminates the falling path through the Pit. This is Alice's custom origin gift; spell mechanics remain subject to the approved character sheet.</small></div>
+ </div>
+</section>
+<section class="panel">
+ <h2>1. Choose your action</h2>
+ <p class="intro">Five approaches are available. Select one to reveal its check, then roll the d20.</p>
+ <div id="choices" class="choice-grid"></div>
+</section>
+<section class="panel">
+ <h2>2. Resolve the check</h2>
+ <div class="row">
+  <label>Ability/skill modifier
+   <input id="modifier" type="number" min="-10" max="20" value="0">
+  </label>
+  <label>Difficulty class (DC)
+   <input id="dc" type="number" min="1" max="40" value="12">
+  </label>
+  <button id="roll" class="primary" disabled>🎲 Roll d20</button>
+ </div>
+ <p class="intro">Modifier defaults to +0 because Alice's finalized ability scores and proficiencies have not yet been loaded. Change it only to match the approved character sheet.</p>
+ <div id="result" aria-live="polite"></div>
+ <p id="status" class="status" role="status"></p>
+</section>
+<section class="panel">
+ <h2>3. Journal & save state</h2>
+ <p id="saveSummary" class="intro">No scene result saved yet.</p>
+ <div class="row">
+  <button id="export">Export scene save JSON</button>
+  <label>Import scene save JSON <input id="import" type="file" accept=".json,application/json"></label>
+  <button id="reset">Reset this scene</button>
+ </div>
+ <h3>Recent event log</h3>
+ <div id="log" class="log">No events yet.</div>
+</section>
+<footer>Prototype storage is local to this browser. It does not sync automatically with GitHub, ChatGPT, or a remote server. Checks and DCs are provisional until the campaign rules profile is approved.</footer>
+</main>
+<script>
+"use strict";
+const SAVE_KEY="moonveil-book1-scene01-v1";
+const options=[
+ {id:"choice-b01-s01-lg",kind:"Lawful Good",key:"lawful_good",title:"Protect the vulnerable",desc:"Call out to anyone else trapped nearby and place yourself between them and the acid.",ability:"Charisma · Persuasion",dc:12,success:"A frightened survivor answers and trusts Alice enough to follow her signals.",failure:"The survivor stays hidden, but Alice learns where the voice came from.",tags:["compassion","survivor-clue"]},
+ {id:"choice-b01-s01-ng",kind:"Neutral Good",key:"neutral_good",title:"Offer help carefully",desc:"Speak calmly and offer a safe route without demanding that anyone trust you.",ability:"Wisdom · Insight",dc:12,success:"Alice identifies the safest approach to the voice.",failure:"She avoids escalating the danger but cannot yet read the survivor's intentions.",tags:["caution","survivor-clue"]},
+ {id:"choice-b01-s01-cg",kind:"Chaotic Good",key:"chaotic_good",title:"Defy the Pit",desc:"Reject the cult's control, disrupt the nearest ritual trace, and make a quick escape route.",ability:"Dexterity · Acrobatics",dc:13,success:"Alice reaches a narrow ledge and discovers a broken sigil.",failure:"The route remains possible, but Alice leaves a visible trace.",tags:["defiance","sigil-clue","exposure-risk"]},
+ {id:"choice-b01-s01-utility",kind:"Utility",key:"utility",title:"Study the impossible corridor",desc:"Examine the hallway residue, acidic stone, and first signs of the Weeping Obsidian phenomenon.",ability:"Intelligence · Arcana",dc:12,success:"Alice records a repeatable clue about the corridor's pulse.",failure:"She learns the corridor is unstable but not how to control it.",tags:["investigation","loop-seed"]},
+ {id:"choice-b01-s01-action",kind:"Action",key:"action",title:"Move now",desc:"Advance cautiously toward the nearest cover before the Pit changes again.",ability:"Dexterity · Stealth",dc:12,success:"Alice reaches cover without attracting attention.",failure:"She reaches cover, but something in the Pit notices her arrival.",tags:["survival","threat-clock"]}
+];
+let state={version:1,sceneId:"scene-book01-rabbit-hole-01",selectedChoiceId:null,events:[],updatedAt:null};
+function validateSave(next){
+ if(!next||typeof next!=="object"||next.version!==1||next.sceneId!=="scene-book01-rabbit-hole-01"||!Array.isArray(next.events)||next.events.length>5000)throw new Error("Incompatible save.");
+ if(next.selectedChoiceId!==null&&!options.some(o=>o.id===next.selectedChoiceId))throw new Error("Invalid selected choice.");
+ if(next.updatedAt!==null&&(typeof next.updatedAt!=="string"||!Number.isFinite(Date.parse(next.updatedAt))))throw new Error("Invalid update time.");
+ const ids=new Set();
+ for(const x of next.events){
+  if(!x||typeof x!=="object"||typeof x.id!=="string"||!x.id||ids.has(x.id))throw new Error("Duplicate or invalid event ID.");
+  ids.add(x.id);const o=options.find(o=>o.id===x.choiceId);
+  if(!o||x.sceneId!==next.sceneId||!Number.isInteger(x.rawRoll)||x.rawRoll<1||x.rawRoll>20||!Number.isInteger(x.modifier)||x.modifier< -10||x.modifier>20||!Number.isInteger(x.dc)||x.dc<1||x.dc>40||x.total!==x.rawRoll+x.modifier||x.success!==(x.total>=x.dc)||x.outcome!==(x.success?o.success:o.failure)||x.ability!==o.ability||!Array.isArray(x.tags)||x.tags.join("|")!==o.tags.join("|")||typeof x.at!=="string"||!Number.isFinite(Date.parse(x.at)))throw new Error("Inconsistent event.");
+ }
+ return next;
+}
+try{const saved=localStorage.getItem(SAVE_KEY);if(saved)state=validateSave(JSON.parse(saved));}catch(err){console.warn("Invalid local save ignored:",err.message);}
+const $=id=>document.getElementById(id);
+const selected=()=>options.find(o=>o.id===state.selectedChoiceId);
+function persist(message){state.updatedAt=new Date().toISOString();localStorage.setItem(SAVE_KEY,JSON.stringify(state));render();if(message)$("status").textContent=message;}
+function render(){
+ const root=$("choices");root.replaceChildren();
+ options.forEach(o=>{const b=document.createElement("button");b.className="choice";b.setAttribute("aria-pressed",String(o.id===state.selectedChoiceId));const k=document.createElement("div");k.className="kind";k.textContent=o.kind;const t=document.createElement("strong");t.textContent=o.title;const d=document.createElement("span");d.textContent=o.desc;b.append(k,t,d);b.onclick=()=>{state.selectedChoiceId=o.id;$("dc").value=o.dc;$("roll").disabled=false;$("result").replaceChildren();$("status").textContent="Selected: "+o.title+". Roll when ready.";render();};root.append(b);});
+ const o=selected();$("roll").disabled=!o;
+ $("saveSummary").textContent=state.events.length?state.events.length+" event(s) saved locally. Last update: "+(state.updatedAt||"unknown"):"No scene result saved yet.";
+ $("log").textContent=state.events.length?state.events.slice().reverse().map(e=>{const choice=options.find(o=>o.id===e.choiceId);return "["+e.at+"] "+(choice?choice.kind+" — "+choice.title:"Unknown choice")+" | d20 "+e.rawRoll+" + "+e.modifier+" = "+e.total+" vs DC "+e.dc+" | "+(e.success?"SUCCESS":"FAILURE")+"\n"+e.outcome+"\nTags: "+e.tags.join(", ");}).join("\n\n"):"No events yet.";
+}
+$("roll").onclick=()=>{
+ const o=selected();if(!o)return;
+ const mod=Number($("modifier").value),dc=Number($("dc").value);
+ if(!Number.isInteger(mod)||mod < -10||mod>20||!Number.isInteger(dc)||dc<1||dc>40){$("status").textContent="Enter a valid integer modifier (-10 to +20) and DC (1 to 40).";return;}
+ const rawRoll=Math.floor(Math.random()*20)+1,total=rawRoll+mod,success=total>=dc,outcome=success?o.success:o.failure;
+ const event={id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+"-"+Math.random(),sceneId:state.sceneId,choiceId:o.id,ability:o.ability,dc,rawRoll,modifier:mod,total,success,outcome,tags:o.tags,at:new Date().toISOString(),rulesStatus:"provisional"};
+ state.events.push(event);
+ const box=$("result");box.replaceChildren();
+ const number=document.createElement("div");number.className="roll";number.textContent=String(rawRoll);
+ const totalLine=document.createElement("p");totalLine.textContent="Total "+total+" vs DC "+dc+" — "+(success?"SUCCESS":"FAILURE");
+ const outcomeLine=document.createElement("p");outcomeLine.textContent=outcome;
+ const caveat=document.createElement("small");caveat.textContent="Logged as a provisional scene outcome. No U01 packets are granted or spent by this scene.";
+ box.append(number,totalLine,outcomeLine,caveat);
+ persist("Roll recorded locally. Review the journal before continuing.");
+};
+$("export").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="moonveil-book1-scene-save.json";a.click();URL.revokeObjectURL(url);$("status").textContent="Save export prepared."};
+$("import").onchange=async e=>{const file=e.target.files&&e.target.files[0];if(!file)return;try{const next=JSON.parse(await file.text());validateSave(next);state=next;persist("Save imported and stored locally.");}catch(err){$("status").textContent="Import failed: "+err.message;}finally{$("import").value=""}};
+$("reset").onclick=()=>{if(!confirm("Delete this scene's local event history? Export a save first if you want a backup."))return;state={version:1,sceneId:"scene-book01-rabbit-hole-01",selectedChoiceId:null,events:[],updatedAt:null};localStorage.removeItem(SAVE_KEY);$("result").replaceChildren();$("modifier").value=0;$("dc").value=12;render();$("status").textContent="Scene reset."};
+render();
+</script></body></html>

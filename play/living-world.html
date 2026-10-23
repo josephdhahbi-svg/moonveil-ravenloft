@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moonveil · Living World Editor</title>
+<style>
+:root{color-scheme:dark;--bg:#090811;--panel:#171422;--line:#45365d;--ink:#f5f0ff;--muted:#c3b8d7;--violet:#a58bff;--silver:#cbd2e1;--good:#9fe0bd;--warn:#f0ca85}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#241735,var(--bg) 70%);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:1200px;margin:auto;padding:20px}h1{font-size:clamp(1.8rem,5vw,3rem);margin:.15em 0}h2{font-size:1.15rem;margin:0 0 12px}.muted{color:var(--muted)}.eyebrow{font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--violet);font-weight:800}.panel{background:rgba(23,20,34,.94);border:1px solid var(--line);border-radius:16px;padding:16px;margin:16px 0}.toolbar{display:flex;flex-wrap:wrap;gap:8px}.toolbar button,button,.file-label{border:1px solid #695387;border-radius:9px;padding:10px 13px;color:var(--ink);background:#302342;font:inherit;cursor:pointer}.toolbar button:hover,button:hover,.file-label:hover{background:#483161;border-color:var(--violet)}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--silver);outline-offset:2px}button.primary{background:#5b3c91;border-color:#b9a2ff}button.danger{border-color:#87536a;background:#3a202e}button:disabled{opacity:.45;cursor:not-allowed}.world{position:relative;isolation:isolate;width:100%;height:min(68vh,700px);min-height:390px;border:1px solid #6e598e;border-radius:14px;overflow:hidden;background:radial-gradient(ellipse at 50% 70%,#3b2053,#100c1d 62%,#06060b);touch-action:none}.world[data-scene="hallway"]{background:radial-gradient(ellipse at 50% 75%,#b8a1ff 0,#4b2c75 8%,#171126 40%,#05050b 80%)}.world[data-scene="pit"]{background:radial-gradient(ellipse at 50% 85%,#563b69 0,#24142d 24%,#0b080f 70%)}.world:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.35;background:repeating-linear-gradient(90deg,transparent 0 8%,#a98cff18 8.1% 8.3%,transparent 8.4% 16%),linear-gradient(0deg,#9c71ff22,transparent 55%);pointer-events:none}.scene-label{position:absolute;top:12px;left:12px;padding:6px 10px;border:1px solid #8c73ac;border-radius:999px;background:#080610b8;color:#f1eaff;font-size:.8rem}.entity{position:absolute;width:88px;height:88px;display:grid;place-items:center;transform:translateZ(0);cursor:grab;user-select:none;touch-action:none;border-radius:50%;border:1px solid #b9a2ff88;background:radial-gradient(circle at 35% 25%,#8f71ba,#251634 65%,#09060e);box-shadow:0 0 20px #8f4dff55;overflow:visible}.entity:active{cursor:grabbing}.entity img{width:100%;height:100%;object-fit:cover;border-radius:50%;pointer-events:none}.entity .fallback{font-size:1.8rem;font-weight:800;text-shadow:0 0 12px #b89cff}.entity .entity-name{position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%);font-size:.73rem;white-space:nowrap;color:#f4efff;text-shadow:0 1px 5px #000;background:#080610b8;padding:2px 6px;border-radius:5px;pointer-events:none}.entity.selected{outline:3px solid var(--silver);outline-offset:3px}.entity.pulse{animation:pulse .55s ease-in-out}.entity.vanish{animation:vanish .35s ease-in forwards}@keyframes pulse{50%{transform:scale(1.25);filter:brightness(1.7)}}@keyframes vanish{to{opacity:0;transform:scale(.1) rotate(30deg)}}.layout{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:5px;color:var(--muted);font-size:.9rem}input,select{width:100%;min-width:0;padding:10px;border:1px solid var(--line);border-radius:8px;background:#0e0b17;color:var(--ink);font:inherit}.stat{border:1px solid var(--line);border-radius:10px;padding:10px}.stat strong{display:block;font-size:1.3rem}.event-log{max-height:220px;overflow:auto;white-space:pre-wrap;color:var(--muted);font-size:.9rem}.status{min-height:1.5em;color:var(--good)}.asset-note{font-size:.84rem;color:var(--warn)}.entity-list{display:grid;gap:6px}.entity-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px;border-bottom:1px solid #ffffff12}.entity-row button{padding:5px 8px}.small{font-size:.82rem}@media(max-width:600px){main{padding:12px}.panel{padding:12px}.world{min-height:360px;height:60vh}.entity{width:70px;height:70px}.toolbar button{flex:1 1 42%}}
+</style>
+</head>
+<body>
+<main>
+<nav style="padding:10px;border:1px solid #695387;border-radius:10px"><a style="color:#d7c6ff" href="./index.html">← Return to Moonveil Adventure</a> · World editor uses a separate local save; export it before switching devices.</nav>
+<header>
+<div class="eyebrow">Moonveil Universe · Prototype Engine</div>
+<h1>Living World Engine v1</h1>
+<p class="muted">A local, editable sandbox for moving, teleporting, spawning, animating, hiding, saving, and restoring scene entities. This prototype runs in the browser and does not synchronize with a server or other players.</p>
+</header>
+<section class="panel">
+<h2>World controls</h2>
+<p><a href="faction-war.html" style="color:#d9c3ff;font-weight:700">⚔ Open Faction Territory War Table →</a> · Explore influence and territory shifts in a separate local simulation.</p>
+<div class="toolbar">
+<button id="teleport" class="primary">Teleport selected</button>
+<button id="animate">Animate selected</button>
+<button id="spawnAlice">Spawn Alice</button>
+<button id="spawnWraith">Spawn Wraith</button>
+<button id="vanish">Vanish selected</button>
+<button id="scenePit">Load Pit scene</button>
+<button id="sceneHallway">Load Hallway scene</button>
+<button id="save">Save world</button>
+<button id="load">Load saved world</button>
+<button id="export">Export JSON</button>
+<label class="file-label" for="importFile">Import JSON</label><input id="importFile" type="file" accept="application/json,.json" hidden>
+<button id="clear" class="danger">Clear world</button>
+</div>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+</section>
+<section class="panel">
+<h2 id="worldTitle">The Pit of Ghaunadaur</h2>
+<div id="world" class="world" data-scene="pit" aria-label="Interactive world stage">
+<div class="scene-label" id="sceneLabel">SCENE · PIT</div>
+</div>
+<p class="asset-note">Art paths follow the asset registry. Until the image files are committed under <code>assets/moonveil/</code>, entities show a designed fallback token.</p>
+</section>
+<section class="layout">
+<div class="panel">
+<h2>Selected entity</h2>
+<div class="layout">
+<label class="field">Display name<input id="editName" maxlength="80" placeholder="Select an entity first"></label>
+<label class="field">Entity type<select id="editType"><option value="character">Character</option><option value="enemy">Enemy</option><option value="npc">NPC</option><option value="item">Item</option><option value="portal">Portal</option></select></label>
+<label class="field">X position (pixels)<input id="editX" type="number" min="0" step="1"></label>
+<label class="field">Y position (pixels)<input id="editY" type="number" min="0" step="1"></label>
+<label class="field">Asset path<input id="editAsset" maxlength="240" placeholder="assets/moonveil/filename.png"></label>
+</div>
+<div class="toolbar" style="margin-top:10px"><button id="applyEdit">Apply edits</button><button id="removeSelected" class="danger">Remove selected</button></div>
+<p class="muted small">Drag a token with mouse or touch, or edit its fields. Coordinates are clamped to the stage.</p>
+</div>
+<div class="panel">
+<h2>World state</h2>
+<div class="layout">
+<div class="stat"><strong id="entityCount">0</strong><span class="muted small">Entities</span></div>
+<div class="stat"><strong id="sceneCount">1</strong><span class="muted small">Scene</span></div>
+<div class="stat"><strong id="saveState">Unsaved</strong><span class="muted small">Local save</span></div>
+</div>
+<h2 style="margin-top:16px">Entity registry</h2>
+<div id="entityList" class="entity-list"></div>
+</div>
+</section>
+<section class="panel">
+<h2>Event log</h2><div id="log" class="event-log">World initialized.</div>
+</section>
+</main>
+<script>
+"use strict";
+(() => {
+const SAVE_KEY="moonveil-living-world-v1";
+const ASSETS={
+ alice:"assets/moonveil/01_alice_infinite_hallway_portrait.png",
+ wraith:"assets/moonveil/02_hallway_wraith_token.png",
+ pit:"",
+ hallway:"assets/moonveil/05_infinite_hallway_location_plate.png"
+};
+const SCENES={
+ pit:{title:"The Pit of Ghaunadaur",label:"SCENE · PIT"},
+ hallway:{title:"The Infinite Hallway",label:"SCENE · INFINITE HALLWAY"}
+};
+const $=id=>document.getElementById(id);
+const world=$("world");
+let state={version:1,scene:"pit",selectedId:null,entities:[],events:[],savedAt:null};
+let dirty=true;
+const id=()=>("mv-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9));
+const clamp=(n,min,max)=>Math.max(min,Math.min(Number.isFinite(n)?n:min,max));
+function log(message){state.events.unshift({at:new Date().toISOString(),message});state.events=state.events.slice(0,80);renderLog();}
+function say(message){$("status").textContent=message;}
+function bounds(){return {w:world.clientWidth,h:world.clientHeight};}
+function normalizePosition(x,y){const b=bounds();return {x:Math.round(clamp(x,0,Math.max(0,b.w-88))),y:Math.round(clamp(y,0,Math.max(0,b.h-88)))};}
+function markDirty(){dirty=true;$("saveState").textContent="Unsaved";}
+function findEntity(entityId){return state.entities.find(e=>e.id===entityId);}
+function selected(){return findEntity(state.selectedId);}
+function makeEntity(kind,name,x,y,asset){
+ const pos=normalizePosition(x,y);const entity={id:id(),kind,name,x:pos.x,y:pos.y,asset:asset||ASSETS[kind]||"",visible:true,createdAt:new Date().toISOString()};
+ state.entities.push(entity);state.selectedId=entity.id;markDirty();log("Spawned "+name+".");render();return entity;
+}
+function choose(entityId){state.selectedId=entityId;render();}
+function buildEntity(entity){
+ const el=document.createElement("div");el.className="entity"+(entity.id===state.selectedId?" selected":"");el.dataset.id=entity.id;el.style.left=entity.x+"px";el.style.top=entity.y+"px";el.setAttribute("role","button");el.tabIndex=0;el.setAttribute("aria-label",entity.name);
+ const img=document.createElement("img");img.alt="";img.draggable=false;img.src=entity.asset||"";img.onerror=()=>{img.remove();const fallback=document.createElement("span");fallback.className="fallback";fallback.textContent=entity.kind==="enemy"?"☠":entity.kind==="portal"?"◉":entity.kind==="item"?"◆":"A";el.prepend(fallback);};if(!entity.asset){img.remove();}
+ if(entity.asset)el.append(img);else {const fallback=document.createElement("span");fallback.className="fallback";fallback.textContent=entity.kind==="enemy"?"☠":entity.kind==="portal"?"◉":entity.kind==="item"?"◆":"A";el.append(fallback);}
+ const label=document.createElement("span");label.className="entity-name";label.textContent=entity.name;el.append(label);
+ el.addEventListener("click",e=>{if(el.dataset.dragged==="1"){el.dataset.dragged="0";return;}e.stopPropagation();choose(entity.id);});
+ el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();choose(entity.id);}});
+ el.addEventListener("pointerdown",e=>{
+  if(e.button!==0&&e.pointerType==="mouse")return;e.preventDefault();e.stopPropagation();choose(entity.id);
+  const start={px:e.clientX,py:e.clientY,x:entity.x,y:entity.y};el.setPointerCapture(e.pointerId);
+  const move=ev=>{const r=world.getBoundingClientRect();const pos=normalizePosition(start.x+ev.clientX-start.px,start.y+ev.clientY-start.py);entity.x=pos.x;entity.y=pos.y;el.style.left=pos.x+"px";el.style.top=pos.y+"px";if(Math.abs(ev.clientX-start.px)+Math.abs(ev.clientY-start.py)>3)el.dataset.dragged="1";updateEditorPosition(entity);markDirty();};
+  const up=()=>{el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);el.removeEventListener("pointercancel",up);log("Moved "+entity.name+" to ("+entity.x+", "+entity.y+").");renderList();};
+  el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);
+ });
+ return el;
+}
+function updateEditorPosition(entity){if(entity.id!==state.selectedId)return;$("editX").value=entity.x;$("editY").value=entity.y;}
+function renderEditor(){
+ const e=selected();const disabled=!e;
+ ["editName","editType","editX","editY","editAsset","applyEdit","removeSelected","teleport","animate","vanish"].forEach(k=>$(k).disabled=disabled);
+ if(!e){$("editName").value="";$("editType").value="character";$("editX").value="";$("editY").value="";$("editAsset").value="";return;}
+ $("editName").value=e.name;$("editType").value=e.kind;$("editX").value=e.x;$("editY").value=e.y;$("editAsset").value=e.asset;
+}
+function renderList(){
+ const root=$("entityList");root.replaceChildren();
+ for(const e of state.entities){const row=document.createElement("div");row.className="entity-row";const label=document.createElement("span");label.textContent=e.name+" · "+e.kind;const button=document.createElement("button");button.textContent=e.id===state.selectedId?"Selected":"Select";button.onclick=()=>choose(e.id);row.append(label,button);root.append(row);}
+ $("entityCount").textContent=state.entities.length;$("sceneCount").textContent=1;
+}
+function renderLog(){$("log").textContent=state.events.slice(0,20).map(e=>"["+e.at+"] "+e.message).join("\n")||"No events yet.";}
+function render(){
+ world.querySelectorAll(".entity").forEach(el=>el.remove());
+ world.dataset.scene=state.scene;$("worldTitle").textContent=SCENES[state.scene].title;$("sceneLabel").textContent=SCENES[state.scene].label;
+ for(const e of state.entities){if(e.visible!==false)world.append(buildEntity(e));}
+ renderEditor();renderList();renderLog();$("saveState").textContent=dirty?"Unsaved":(state.savedAt?"Saved":"Unsaved");
+}
+function selectedAction(){const e=selected();if(!e){say("Select an entity first.");return null;}return e;}
+function teleport(){const e=selectedAction();if(!e)return;const b=bounds();const p=normalizePosition(Math.random()*Math.max(1,b.w-88),Math.random()*Math.max(1,b.h-88));e.x=p.x;e.y=p.y;markDirty();log("Teleported "+e.name+" to ("+e.x+", "+e.y+").");render();say("Teleport complete.");}
+function animate(){const e=selectedAction();if(!e)return;const el=world.querySelector('[data-id="'+e.id+'"]');if(!el)return;el.classList.remove("pulse");void el.offsetWidth;el.classList.add("pulse");log("Animated "+e.name+".");say("Animation played.");}
+function vanish(){const e=selectedAction();if(!e)return;const el=world.querySelector('[data-id="'+e.id+'"]');if(el){el.classList.add("vanish");}setTimeout(()=>{state.entities=state.entities.filter(x=>x.id!==e.id);state.selectedId=null;markDirty();log("Removed "+e.name+" from the world.");render();say("Entity vanished.");},360);}
+function changeScene(scene){if(!SCENES[scene])return;state.scene=scene;markDirty();log("Changed scene to "+SCENES[scene].title+".");render();say("Scene changed.");}
+function saveWorld(){try{state.savedAt=new Date().toISOString();localStorage.setItem(SAVE_KEY,JSON.stringify(state));dirty=false;render();say("World saved in this browser.");}catch(e){say("Save failed: "+e.message);}}
+function loadWorld(){try{const raw=localStorage.getItem(SAVE_KEY);if(!raw){say("No saved world found in this browser.");return;}const next=JSON.parse(raw);if(!validateState(next))throw new Error("Save format or entity values are invalid.");state=next;dirty=false;render();say("Saved world restored.");log("Loaded saved world.");}catch(e){say("Load failed: "+e.message);}}
+function validateState(next){return next&&next.version===1&&SCENES[next.scene]&&Array.isArray(next.entities)&&next.entities.length<=500&&next.entities.every(e=>e&&typeof e.id==="string"&&typeof e.name==="string"&&typeof e.kind==="string"&&Number.isFinite(e.x)&&Number.isFinite(e.y)&&typeof e.asset==="string"&&e.asset.length<=240);}
+function exportWorld(){const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="moonveil-living-world-save.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);say("World JSON exported.");}
+async function importWorld(file){try{const next=JSON.parse(await file.text());if(!validateState(next))throw new Error("Invalid or incompatible world save.");state=next;markDirty();render();saveWorld();log("Imported world save.");say("World imported and saved locally.");}catch(e){say("Import failed: "+e.message);}}
+function applyEdits(){const e=selectedAction();if(!e)return;const name=$("editName").value.trim();if(!name){say("Entity name cannot be empty.");return;}e.name=name;e.kind=$("editType").value;const p=normalizePosition(Number($("editX").value),Number($("editY").value));e.x=p.x;e.y=p.y;e.asset=$("editAsset").value.trim();markDirty();log("Edited "+e.name+".");render();say("Entity edits applied.");}
+$("teleport").onclick=teleport;$("animate").onclick=animate;
+$("spawnAlice").onclick=()=>{const b=bounds();makeEntity("character","Alice Z'ress",b.w*.22,b.h*.28,ASSETS.alice);say("Alice spawned.");};
+$("spawnWraith").onclick=()=>{const b=bounds();makeEntity("enemy","Hallway Wraith",b.w*.65,b.h*.35,ASSETS.wraith);say("Hallway Wraith spawned.");};
+$("vanish").onclick=vanish;$("scenePit").onclick=()=>changeScene("pit");$("sceneHallway").onclick=()=>changeScene("hallway");
+$("save").onclick=saveWorld;$("load").onclick=loadWorld;$("export").onclick=exportWorld;
+$("importFile").addEventListener("change",async e=>{if(e.target.files&&e.target.files[0])await importWorld(e.target.files[0]);e.target.value="";});
+$("clear").onclick=()=>{if(!confirm("Clear all entities from the current world? This changes the live state; saved data remains until you save."))return;state.entities=[];state.selectedId=null;markDirty();log("Cleared all visible entities.");render();say("World cleared. Save to persist this change.");};
+$("applyEdit").onclick=applyEdits;$("removeSelected").onclick=vanish;
+world.addEventListener("click",e=>{if(e.target===world){state.selectedId=null;renderEditor();renderList();world.querySelectorAll(".entity.selected").forEach(el=>el.classList.remove("selected"));}});
+window.addEventListener("resize",()=>{state.entities=state.entities.map(e=>({...e,...normalizePosition(e.x,e.y)}));markDirty();render();});
+function init(){let restoredFromSave=false;try{const raw=localStorage.getItem(SAVE_KEY);if(raw){const restored=JSON.parse(raw);if(validateState(restored)){state=restored;dirty=false;restoredFromSave=true;}else{say("Saved world was incompatible; starting a new scene.");}}}catch(e){say("Saved world could not be loaded; starting a new scene.");}if(!restoredFromSave){const b=bounds();makeEntity("character","Alice Z'ress",b.w*.22,b.h*.3,ASSETS.alice);makeEntity("enemy","Hallway Wraith",b.w*.65,b.h*.35,ASSETS.wraith);state.scene="pit";dirty=true;}render();log("Living World Engine initialized locally.");}
+init();
+})();
+</script>
+<script src="./moonveil-module-hub.js" defer></script></body>
+</html>

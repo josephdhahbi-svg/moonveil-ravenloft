@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moonveil · Adventure War Room</title>
+<style>
+:root{color-scheme:dark;--bg:#0a0912;--panel:#191525;--line:#55456c;--text:#f5efff;--muted:#c6bbd7;--gold:#e8c57e}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#2b2042,var(--bg) 65%);color:var(--text);font:15px/1.5 system-ui,Segoe UI,sans-serif}
+main{max-width:1240px;margin:auto;padding:20px}h1{font-size:clamp(1.9rem,5vw,3.2rem);margin:.2em 0}h2{margin:0 0 12px;font-size:1.25rem}h3{margin:10px 0}.muted,p{color:var(--muted)}.panel{border:1px solid var(--line);border-radius:14px;background:#191525ee;padding:16px;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}.stat{border:1px solid #655080;border-radius:10px;padding:12px;background:#241d34}.stat strong{display:block;font-size:1.65rem;color:var(--gold)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.controls label{display:grid;gap:4px;min-width:155px;flex:1}
+button,input,select{font:inherit;color:var(--text);background:#302342;border:1px solid #8067a2;border-radius:8px;padding:9px 11px}
+button{cursor:pointer}button:hover{background:#4c346b}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #d9c5ff;outline-offset:2px}
+a{color:#d6bcff}.scroll{overflow:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse;min-width:700px}th,td{padding:10px;text-align:left;border-bottom:1px solid #433754;vertical-align:top}th{background:#322640;color:#f1dfff}tbody tr:hover{background:#2b223c}
+.badge{border-radius:5px;padding:3px 7px;font-size:.8rem;font-weight:700;white-space:nowrap}.BLUE{background:#194a80;color:#dcefff}.RED{background:#70263b;color:#ffe0e7}.GREEN{background:#205940;color:#d7ffe5}.AMBER{background:#6b5125;color:#fff0bd}
+.note{font-size:.85rem;color:#d8c7a8}.action{font-weight:700}.log{white-space:pre-wrap;max-height:240px;overflow:auto;font-size:.85rem;color:#d3c8df}
+</style></head><body><nav style="padding:12px;background:#171422"><a style="color:#dfcfff" href="./index.html">← Moonveil Adventure</a></nav><main>
+<header><small>MOONVEIL UNIVERSE · CAMPAIGN COMMAND CENTER</small><h1>⚔ Adventure War Room</h1>
+<p>Track battles, heroes, villains, strategic objectives, missions, and campaign progression across Alice Z'ress's adventures. This is a local planning and playtest tool, not the canonical character sheet or a multiplayer server.</p>
+<p><a href="living-world.html">Living World</a> · <a href="faction-war.html">Faction Territory War</a> · <a href="book1.html">Book 1</a> · <a href="tactical-war-table.html">⚔ Tactical Battle Grid</a></p></header>
+<section class="panel"><h2>Campaign command</h2><div class="controls">
+<label>Traversal (1–7)<select id="traversal"></select></label>
+<label>Book (1–30)<select id="book"></select></label>
+<label>Current theater<select id="theater"><option value="underdark">Underdark</option><option value="abyss">Abyss</option><option value="avernus">Avernus</option><option value="ravenloft">Ravenloft</option><option value="spelljammer">Spelljammer</option><option value="planescape">Planescape</option></select></label>
+<button id="advance">Advance book</button><button id="export">Export campaign report</button><button id="reset">Reset local war room</button>
+</div><p id="status" role="status" aria-live="polite">Local war room ready.</p>
+<div class="grid"><div class="stat"><small>Traversal</small><strong id="statTraversal">1 / 7</strong></div>
+<div class="stat"><small>Book</small><strong id="statBook">1 / 30</strong></div>
+<div class="stat"><small>Encounter victories</small><strong id="statVictories">0</strong></div>
+<div class="stat"><small>Objectives completed</small><strong id="statObjectives">0</strong></div></div></section>
+<section class="panel"><h2>Table I · Adventure theaters</h2><p class="note">Theaters are a planning index, not an assertion that every listed setting has a finalized book assignment.</p>
+<div class="scroll"><table><thead><tr><th>Theater</th><th>Primary theme</th><th>Operational challenge</th><th>Heroic objective</th></tr></thead><tbody id="theaterTable"></tbody></table></div></section>
+<section class="panel"><h2>Table II · Active battle board</h2><div class="controls">
+<label>Encounter<select id="encounter"></select></label><label>Resolution<select id="resolution"><option value="victory">Heroic victory</option><option value="retreat">Strategic retreat</option><option value="parley">Parley / nonviolent resolution</option></select></label>
+<button id="resolve">Record encounter result</button></div>
+<div class="scroll"><table><thead><tr><th>Encounter</th><th>Theater</th><th>Threat</th><th>Heroic goal</th><th>Local status</th></tr></thead><tbody id="battleTable"></tbody></table></div></section>
+<section class="panel"><h2>Table III · Heroes, villains, and neutral parties</h2>
+<div class="scroll"><table><thead><tr><th>Character / faction</th><th>Moral role</th><th>Allegiance / relationship</th><th>Strategic notes</th></tr></thead><tbody id="rosterTable"></tbody></table></div></section>
+<section class="panel"><h2>Table IV · Mission and objective ledger</h2><div class="controls"><label>Objective<select id="objective"></select></label><button id="complete">Mark objective completed</button><button id="reopen">Reopen objective</button></div>
+<div class="scroll"><table><thead><tr><th>Objective</th><th>Scope</th><th>Prerequisite / rule</th><th>Status</th></tr></thead><tbody id="objectiveTable"></tbody></table></div></section>
+<section class="panel"><h2>Table V · Strategic resources and consequences</h2>
+<div class="scroll"><table><thead><tr><th>Resource / system</th><th>Tracking rule</th><th>Current local count</th><th>Continuity guardrail</th></tr></thead><tbody id="resourceTable"></tbody></table></div></section>
+<section class="panel"><h2>Table VI · Campaign chronology</h2><div class="scroll"><table><thead><tr><th>Phase</th><th>Book range</th><th>Traversal rule</th><th>Campaign note</th></tr></thead><tbody id="chronologyTable"></tbody></table></div></section>
+<section class="panel"><h2>Local command journal</h2><div id="journal" class="log">No recorded commands yet.</div></section>
+<footer class="note">Planning encounters, character relationships, and theaters are provisional where canon has not been verified. No automatic dice rewards, item grants, redemption, or server-side changes occur here.</footer>
+<script>
+"use strict";(()=>{
+const KEY="moonveil-adventure-war-room-v1";
+const theaters=[
+ ["underdark","Underdark","Exploration, intrigue, Lolth and Ghaunadaur","Protect civilians, investigate the Pit, rescue captives"],
+ ["abyss","Abyss","Demon lords, the Endless Maze, corruption","Survive planar threats and seek legitimate redemption"],
+ ["avernus","Avernus","Infernal war, contracts, Zariel's legacy","Rescue souls and reject exploitative bargains"],
+ ["ravenloft","Ravenloft","Domains of Dread, survival, mysteries","Build refuge and confront tyrants"],
+ ["spelljammer","Spelljammer","Wildspace travel and cosmic conflict","Protect travelers and explore responsibly"],
+ ["planescape","Planescape","Planar politics and convergence","Defend multiversal balance"]];
+const encounters=[
+ {id:"pit-scout",name:"Pit perimeter reconnaissance",theater:"underdark",threat:"Unknown cult patrol",goal:"Discover safe route without harming captives"},
+ {id:"lolth-web",name:"Lolth's Web confrontation",theater:"underdark",threat:"Lolth-aligned agents",goal:"Free victims and uncover the plot"},
+ {id:"maze",name:"Endless Maze expedition",theater:"abyss",threat:"Minotaur forces",goal:"Recover intelligence and escape safely"},
+ {id:"infernal",name:"Avernian rescue corridor",theater:"avernus",threat:"Infernal patrol",goal:"Protect civilians and secure evacuation"},
+ {id:"mist",name:"Domain of Dread evacuation",theater:"ravenloft",threat:"Mist-bound danger",goal:"Escort refugees to safety"},
+ {id:"void",name:"Wildspace convoy defense",theater:"spelljammer",threat:"Unidentified raiders",goal:"Protect the convoy"},
+ {id:"portal",name:"Planar crossing stabilization",theater:"planescape",threat:"Unstable portal",goal:"Prevent casualties"}];
+const roster=[
+ ["Alice Z'ress","BLUE","Great Old One Warlock; Ghaunadaur patron","Heroic protagonist; Mystra and Eilistraee grant protective gifts"],
+ ["Eilistraee","BLUE","Protective goddess","Heroic divine influence; not Alice's warlock patron"],
+ ["Mystra","BLUE","Divine protection","Shield gift; not Alice's warlock patron"],
+ ["Lolth","RED","Major recurring antagonist","Political and divine conflict; redemption only through earned story actions"],
+ ["Ghaunadaur","RED","Great Old One patron and threat","Acid Splash gift; patron does not make Alice villainous"],
+ ["Independent refugees","GREEN","Nonaligned civilians","Protect their agency; individuals may become allies"]];
+const objectives=[
+ {id:"survivors",name:"Locate survivors of the Pit",scope:"Book 1 opening",rule:"Investigate before resolving outcomes"},
+ {id:"gifts",name:"Record three origin gifts",scope:"Alice origin",rule:"Shield, Acid Splash, Blade Ward; no automatic new grants"},
+ {id:"lolth",name:"Investigate Lolth's influence",scope:"Underdark",rule:"Verify date, location, faction and source"},
+ {id:"abyss",name:"Map the Endless Maze",scope:"Abyss",rule:"Require actual expedition progress"},
+ {id:"rescue",name:"Establish a rescue corridor",scope:"Avernus",rule:"Preserve civilian choice and safety"},
+ {id:"continuity",name:"Complete chronology review",scope:"All books",rule:"DR date, plane, prerequisites, canon status"}];
+const resources=[
+ ["Major boss victories","Lifetime target",81,"Only verified major boss fights count"],
+ ["Lich soul gems","Lifetime target",500,"Requires verified acquisition from liches"],
+ ["Gems collected","Lifetime target",13500,"Do not grant through this planner"],
+ ["Gold collected","Lifetime target",108000,"Track collected, not assumed balance"],
+ ["Spells / powers learned","Lifetime target",72,"Check actual prerequisites and availability"],
+ ["Divine treasury rewards","Endgame locked",150,"Never grant at starting or midgame stages"]];
+const $=id=>document.getElementById(id);
+const fresh=()=>({version:1,traversal:1,book:1,theater:"underdark",battles:{},objectives:{},journal:[]});
+function valid(s){return s&&s.version===1&&Number.isInteger(s.traversal)&&s.traversal>=1&&s.traversal<=7&&
+ Number.isInteger(s.book)&&s.book>=1&&s.book<=30&&theaters.some(t=>t[0]===s.theater)&&
+ s.battles&&typeof s.battles==="object"&&!Array.isArray(s.battles)&&s.objectives&&
+ typeof s.objectives==="object"&&!Array.isArray(s.objectives)&&Array.isArray(s.journal)&&s.journal.length<=100;}
+let state=fresh();try{const raw=localStorage.getItem(KEY);if(raw){const saved=JSON.parse(raw);if(valid(saved))state=saved;}}catch(_){}
+function el(tag,value){const n=document.createElement(tag);if(value!==undefined)n.textContent=String(value);return n;}
+function rows(id,records){const root=$(id);root.replaceChildren();for(const record of records){const tr=el("tr");for(const value of record){const td=el("td",value);tr.append(td);}root.append(tr);}}
+function note(message){state.journal.unshift({at:new Date().toISOString(),message});state.journal=state.journal.slice(0,100);$("status").textContent=message;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){$("status").textContent="Storage unavailable: export a report to keep changes.";}render();}
+function render(){
+ $("traversal").value=state.traversal;$("book").value=state.book;$("theater").value=state.theater;
+ $("statTraversal").textContent=state.traversal+" / 7";$("statBook").textContent=state.book+" / 30";
+ $("statVictories").textContent=Object.values(state.battles).filter(v=>v==="victory").length;
+ $("statObjectives").textContent=Object.values(state.objectives).filter(Boolean).length;
+ rows("theaterTable",theaters.map(t=>[t[0].toUpperCase(),t[1],t[2],t[3]]));
+ rows("battleTable",encounters.map(e=>[e.name,e.theater,e.threat,e.goal,state.battles[e.id]||"Unresolved"]));
+ rows("rosterTable",roster);
+ rows("objectiveTable",objectives.map(o=>[o.name,o.scope,o.rule,state.objectives[o.id]?"Completed":"Open"]));
+ rows("resourceTable",resources.map(r=>[r[0],r[1],r[2],r[3]]));
+ rows("chronologyTable",[
+ ["First cycle","1–30","Traversal 1","Opening journey"],
+ ["Middle cycles","1–30","Traversals 2–6","Return from Book 30 to Book 1 each cycle"],
+ ["Final cycle","1–30","Traversal 7","Final ascension / endgame pass"],
+ ["After Book 30","30 → 1","Unless traversal 7 ends","Do not invent an eighth traversal"]]);
+ $("journal").textContent=state.journal.length?state.journal.map(x=>x.at+" · "+x.message).join("\n"):"No recorded commands yet.";
+}
+for(let i=1;i<=7;i++){const o=el("option",i);o.value=i;$("traversal").append(o);}
+for(let i=1;i<=30;i++){const o=el("option","Book "+i);o.value=i;$("book").append(o);}
+for(const e of encounters){const o=el("option",e.name);o.value=e.id;$("encounter").append(o);}
+for(const odata of objectives){const o=el("option",odata.name);o.value=odata.id;$("objective").append(o);}
+$("traversal").onchange=()=>{state.traversal=Number($("traversal").value);save();};
+$("book").onchange=()=>{state.book=Number($("book").value);save();};
+$("theater").onchange=()=>{state.theater=$("theater").value;save();};
+$("advance").onclick=()=>{if(state.book===30){if(state.traversal===7){$("status").textContent="Final traversal complete. No eighth cycle is defined.";return;}state.book=1;state.traversal++;note("Book 30 looped to Book 1 of traversal "+state.traversal);}else{state.book++;note("Advanced to Book "+state.book+" (traversal "+state.traversal+")");}save();};
+$("resolve").onclick=()=>{const id=$("encounter").value;const result=$("resolution").value;state.battles[id]=result;note("Recorded "+id+": "+result+". No rewards granted.");save();};
+$("complete").onclick=()=>{state.objectives[$("objective").value]=true;note("Objective marked completed in local planning log.");save();};
+$("reopen").onclick=()=>{delete state.objectives[$("objective").value];note("Objective reopened.");save();};
+$("reset").onclick=()=>{if(!confirm("Delete local Adventure War Room progress? Export first if needed."))return;state=fresh();note("Local war room reset.");save();};
+$("export").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=el("a");a.href=url;a.download="moonveil-adventure-war-room.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$("status").textContent="Local war room report exported.";};
+render();
+})();
+</script></main><script src="./moonveil-module-hub.js" defer></script></body></html>

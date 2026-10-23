@@ -1,0 +1,14 @@
+{
+  "status": "packaged_not_installed",
+  "source_archive": "moonveil_archive_assets.zip",
+  "asset_count": 7,
+  "assets": [
+    {"file": "forgotten_archive_scene.png", "sha256": "f55c297f14340ca22cc8200f9e0d2798d25150732ba13b27d3cf10a8be415e4c", "width": 791, "height": 410},
+    {"file": "netherese_guardian_portrait.png", "sha256": "84fa6cd800201168a3f42893d5ebbb068b93899ab023601046f5adc4cb915661", "width": 302, "height": 164},
+    {"file": "vesper_vane_portrait.png", "sha256": "783f65e5c1d19f2027f8c827f8c80eb1753706bb7d8a6f574210dd081816eb74", "width": 200, "height": 240},
+    {"file": "archive_story_panel_1.png", "sha256": "b4075c674786f8c96f017e619ab8c1766d745330ded8013eecfe4e93c4d13385", "width": 318, "height": 119},
+    {"file": "archive_story_panel_2.png", "sha256": "a0c36680ee64784cd80b09fae285f61328235693b9474bb3e3a2b74f090d5aed", "width": 329, "height": 119},
+    {"file": "archive_story_panel_3.png", "sha256": "b69bf8681b514394ad4a48c7c3e229b211c652262cb33cc5223650f23db62990", "width": 266, "height": 119},
+    {"file": "archive_story_panel_4.png", "sha256": "997bdc5b266daf27aed248049b7ed0ec01e231bc72871d2b5e1f288ed344071e", "width": 266, "height": 119}
+  ]
+}

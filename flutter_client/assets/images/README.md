@@ -1,0 +1,1 @@
+Place licensed Moonveil artwork here: barovia_bg.png, panel_threshold.png, panel_vaelthara.png, panel_relics.png, panel_fate.png. Missing images fall back gracefully. No artwork has been imported yet.

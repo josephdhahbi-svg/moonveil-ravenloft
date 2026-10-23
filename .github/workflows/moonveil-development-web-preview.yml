@@ -1,0 +1,80 @@
+name: Moonveil Development Web Preview
+
+# Builds a downloadable preview artifact. Never publishes GitHub Pages.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - integration/copy-first-audit
+    paths:
+      - 'flutter_client/**'
+      - '.github/workflows/moonveil-development-web-preview.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  web-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integration/copy-first-audit
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Resolve dependencies
+        working-directory: flutter_client
+        run: flutter pub get
+      - name: Verify tests
+        working-directory: flutter_client
+        run: flutter test
+      - name: Generate web platform scaffold
+        working-directory: flutter_client
+        run: flutter create . --platforms web --project-name moonveil_client
+      - name: Build web preview
+        working-directory: flutter_client
+        run: flutter build web --release --target lib/preview_main.dart --base-href /moonveil-preview/
+      - name: Install verified reference data into playable browser game
+        run: |
+          mkdir -p play/data
+          cp flutter_client/assets/data/moonveil_verified_context.json play/data/moonveil_verified_context.json
+      - name: Verify existing playable browser game
+        run: |
+          test -f play/index.html
+          test -s play/living-world.html
+          test -s play/faction-war.html
+          node --check play/moonveil-module-hub.js
+          for page in index.html living-world.html faction-war.html adventure-war-room.html tactical-war-table.html; do
+            grep -Fq './moonveil-module-hub.js' "play/$page"
+          done
+          for page in book1.html tactical-war-table.html adventure-war-room.html tactical-command-deck.html; do
+            test -s "play/$page"
+            grep -Fq "./$page" play/index.html
+          done
+          grep -Fq 'faction-war.html' play/living-world.html
+          grep -Fq './living-world.html' play/index.html
+          for module in moonveil-audio.js moonveil-cinematics.js moonveil-combat.js moonveil-ravenloft-tables.js; do
+            test -s "play/$module"
+            node --check "play/$module"
+            grep -Fq "./$module" play/index.html
+          done
+          node --check play/moonveil-reference-sheet.js
+          grep -Fq './moonveil-reference-sheet.js' play/index.html
+          test -s play/data/moonveil_verified_context.json
+          grep -Fq 'moonveil-portable-v1' play/index.html
+          grep -Fq 'moonveil-vesper-portable-save.json' play/index.html
+      - name: Package original playable game and Flutter prototype separately
+        run: |
+          tar -czf moonveil-playable-browser.tar.gz -C play .
+          tar -czf moonveil-flutter-training-preview.tar.gz -C flutter_client/build/web .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moonveil-playable-browser
+          path: moonveil-playable-browser.tar.gz
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moonveil-flutter-training-preview
+          path: moonveil-flutter-training-preview.tar.gz
+          retention-days: 7

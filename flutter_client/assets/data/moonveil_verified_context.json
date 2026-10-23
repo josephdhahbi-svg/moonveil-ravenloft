@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "source": "approved Moonveil campaign checkpoint and development ledger",
+  "campaign": {
+    "id": "vesper",
+    "character_id": "vesper-vane",
+    "name": "Vesper Vane",
+    "ancestry": "Dhampir",
+    "class": "Undead Warlock",
+    "level": 1,
+    "max_level": 30,
+    "patron": "Vaelthara, archlich of Mystra",
+    "faith": "Mystra",
+    "alignment": "heroic",
+    "hp": 10,
+    "max_hp": 10,
+    "armor_class": 13,
+    "pact_slots": 1,
+    "max_pact_slots": 1,
+    "speed_ft": 30,
+    "darkvision_ft": 60,
+    "proficiency_bonus": 2,
+    "location": "Clockwork Tea-Party Ruins",
+    "link": 2,
+    "sector": "D",
+    "checkpoint": "Forgotten Netherese-Barovian Archive open; Choice F relic harmonization completed",
+    "relics": [
+      "Sight of Vaelthara",
+      "Hand of the Weave",
+      "Silver Strand Codex"
+    ],
+    "quest_items": [
+      "Vial of Pure Selûnite Starlight"
+    ],
+    "hybrid_unlock_levels": [
+      3,
+      6,
+      9,
+      12,
+      15,
+      18,
+      21,
+      24,
+      27,
+      30
+    ]
+  },
+  "artwork": {
+    "target": 300,
+    "comic_pack_crops_reported": 30,
+    "comic_pack_installed": false,
+    "first_archive_pack_count": 7,
+    "first_archive_pack_installed": false,
+    "previous_150_reported_not_reverified": true,
+    "style": "photorealistic cinematic",
+    "requirement": "separate individual character, monster, summon and prop tokens; editable dialogue and grid-ready maps"
+  },
+  "development": {
+    "branch": "integration/copy-first-audit",
+    "main_deploy_allowed": false,
+    "save_mutations_allowed": false,
+    "flutter_client": "flutter_client",
+    "project_memory_db": ".moonveil_local/project_memory.sqlite3"
+  },
+  "tasks": [
+    {
+      "id": "ci",
+      "title": "Verify latest CI and fix failures",
+      "priority": 1
+    },
+    {
+      "id": "art",
+      "title": "Install SHA-256 verified PNGs and verify Flutter rendering",
+      "priority": 1
+    },
+    {
+      "id": "save",
+      "title": "Preserve Vesper/Alice save isolation and regression tests",
+      "priority": 1
+    },
+    {
+      "id": "dashboard",
+      "title": "Integrate read-only project context dashboard",
+      "priority": 2
+    },
+    {
+      "id": "queue",
+      "title": "Prepare and review 300 image jobs with token variants",
+      "priority": 2
+    }
+  ]
+}

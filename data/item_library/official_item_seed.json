@@ -1,0 +1,1207 @@
+{
+  "schema_version": 1,
+  "library_id": "moonveil-official-items",
+  "scope": "Curated initial seed, NOT complete 5.5e bibliography",
+  "items": [
+    {
+      "id": "MOI-000001",
+      "name": "Adamantine Weapon",
+      "item_type": "weapon",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000002",
+      "name": "Baba Yaga's Dancing Broom",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000003",
+      "name": "Cube of Summoning",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000004",
+      "name": "Energy Bow",
+      "item_type": "weapon",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000005",
+      "name": "Enspelled Armor",
+      "item_type": "armor",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000006",
+      "name": "Enspelled Staff",
+      "item_type": "staff",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000007",
+      "name": "Enspelled Weapon",
+      "item_type": "weapon",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000008",
+      "name": "Executioner's Axe",
+      "item_type": "weapon",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000009",
+      "name": "Hag Eye",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000010",
+      "name": "Hat of Many Spells",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000011",
+      "name": "Lute of Thunderous Thumping",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000012",
+      "name": "Potion of Pugilism",
+      "item_type": "potion",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000013",
+      "name": "Quarterstaff of the Acrobat",
+      "item_type": "weapon",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000014",
+      "name": "Rival Coin",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000015",
+      "name": "Scroll of Titan Summoning",
+      "item_type": "scroll",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000016",
+      "name": "Shield of the Cavalier",
+      "item_type": "armor",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000017",
+      "name": "Silvered Weapon",
+      "item_type": "weapon",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000018",
+      "name": "Spirit Board",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000019",
+      "name": "Sylvan Talon",
+      "item_type": "weapon",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000020",
+      "name": "Thunderous Greatclub",
+      "item_type": "weapon",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000021",
+      "name": "Wraps of Unarmed Power",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000022",
+      "name": "Eye of Vecna",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000023",
+      "name": "Hand of Vecna",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000024",
+      "name": "Book of Vile Darkness",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000025",
+      "name": "Staff of the Magi",
+      "item_type": "staff",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000026",
+      "name": "Staff of Power",
+      "item_type": "staff",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000027",
+      "name": "Rod of Lordly Might",
+      "item_type": "rod",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000028",
+      "name": "Ring of Spell Storing",
+      "item_type": "ring",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000029",
+      "name": "Deck of Many Things",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    },
+    {
+      "id": "MOI-000030",
+      "name": "Ioun Stone",
+      "item_type": "wondrous item",
+      "edition": "2024-compatible: verify per source",
+      "source": {
+        "title": "Dungeon Master's Guide (2024)",
+        "publisher": "Wizards of the Coast",
+        "page": null,
+        "uri": null,
+        "verified": false
+      },
+      "rarity": null,
+      "attunement": {
+        "required": null,
+        "prerequisite": null
+      },
+      "mechanics": {
+        "ac": null,
+        "damage": null,
+        "damage_type": null,
+        "charges": null,
+        "recharge": null,
+        "save_dc": null,
+        "bonus": null,
+        "properties": [],
+        "rules_text": null
+      },
+      "visual": {
+        "asset_id": null,
+        "asset_path": null
+      },
+      "collection": {
+        "owned": false,
+        "attuned": false,
+        "location": null
+      },
+      "review_status": "needs_primary_source_verification",
+      "license": "metadata_only"
+    }
+  ]
+}

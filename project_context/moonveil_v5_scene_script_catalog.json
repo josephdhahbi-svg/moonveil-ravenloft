@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "purpose": "Narration scripts reference V5 numbered art without changing saves",
+  "scenes": [
+    {
+      "id": "vesper-archive-entrance",
+      "campaign": "vesper",
+      "asset_id": "DI-004",
+      "battle_asset_id": "BA-004",
+      "speaker": "Vesper Vane",
+      "dialogue": "The Forgotten Archive is open. The silver threads are responding to the relics, but something is moving beyond the doorway.",
+      "narration": "Moonlight crosses the ancient floor as the seals of the Netherese-Barovian Archive flicker.",
+      "choices": ["Lawful Good", "Neutral Good", "Chaotic Good", "Utility", "Action"],
+      "status": "script_draft",
+      "save_effect": "none"
+    },
+    {
+      "id": "vesper-abbey-defense",
+      "campaign": "vesper",
+      "asset_id": "SB-002",
+      "battle_asset_id": "BA-001",
+      "speaker": "Vaelthara",
+      "dialogue": "Protect the living first. The dead can wait for judgment; the innocent cannot.",
+      "narration": "A bell sounds over the Abbey of Three Lights as distant shapes gather in the mist.",
+      "choices": ["Lawful Good", "Neutral Good", "Chaotic Good", "Utility", "Action"],
+      "status": "future_scene_draft",
+      "save_effect": "none"
+    },
+    {
+      "id": "vesper-stradh-foreshadow",
+      "campaign": "vesper",
+      "asset_id": "SB-001",
+      "battle_asset_id": "BA-002",
+      "speaker": "Strahd von Zarovich",
+      "dialogue": "You have crossed into my domain, little witch. Every door here opens at my pleasure.",
+      "narration": "Castle Ravenloft stands beyond the rain, its highest tower briefly illuminated by lightning.",
+      "choices": ["Lawful Good", "Neutral Good", "Chaotic Good", "Utility", "Action"],
+      "status": "future_scene_draft",
+      "save_effect": "none"
+    }
+  ]
+}

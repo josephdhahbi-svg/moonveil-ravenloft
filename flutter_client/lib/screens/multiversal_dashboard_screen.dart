@@ -1,0 +1,510 @@
+import 'dart:convert';
+import '../widgets/archive_observatory_panel.dart';
+import '../widgets/archive_conduit_puzzle_panel.dart';
+import '../models/forgotten_archive_consequences.dart';
+
+import 'moonveil_scene_library_screen.dart';
+import 'moonveil_encounter_screen.dart';
+import '../widgets/moonveil_archive_scene_preview.dart';
+import '../services/moonveil_archive_quest_service.dart';
+import '../widgets/moonveil_fusion_gallery.dart';
+import '../widgets/moonveil_v4_action_gallery.dart';
+import '../widgets/moonveil_v11_inventory_album.dart';
+import '../widgets/moonveil_image_navigation.dart';
+import 'moonveil_project_context_screen.dart';
+import 'moonveil_master_gui_and_ai_hub.dart';
+import 'moonveil_vtt_hud_screen.dart';
+import '../widgets/forgotten_archive_combat_panel.dart';
+import 'package:flutter/material.dart';
+import '../services/multiversal_router_service.dart';
+import '../models/character_profile.dart';
+import '../screens/character_sheet_screen.dart';
+import '../screens/admin_console_screen.dart';
+import '../screens/luma_admin_robot_command_screen.dart';
+import '../screens/copilot_sync_dashboard_screen.dart';
+import '../screens/copilot_build_timeline_screen.dart';
+import '../screens/system_override_control_screen.dart';
+import '../screens/moonveil_category_browser.dart';
+import '../screens/art_production_dashboard_screen.dart';
+import '../services/art_production_service.dart';
+import '../models/cinematic_storyboard_model.dart';
+import '../widgets/cinematic_storyboard_widget.dart';
+import '../screens/multiversal_command_deck_screen.dart';
+import '../services/visual_codex_service.dart';
+import '../storage/moonveil_database.dart';
+import '../widgets/interactive_dice_roller_modal.dart';
+import '../widgets/visual_codex_gallery_grid.dart';
+
+/// Visual shell only: no fabricated checkpoint, equipment, or stat changes.
+class MultiversalDashboardScreen extends StatefulWidget {
+  const MultiversalDashboardScreen({super.key});
+  @override
+  State<MultiversalDashboardScreen> createState() => _MultiversalDashboardState();
+}
+
+class _StoryPanel {
+  const _StoryPanel(this.title, this.story, this.asset, this.networkUrl, this.icon);
+  final String title;
+  final String story;
+  final String asset;
+  final String networkUrl;
+  final IconData icon;
+}
+
+class _MultiversalDashboardState extends State<MultiversalDashboardScreen> {
+  static final _panels = [
+    _StoryPanel('The Silver Threshold',
+        'A moonlit rune door stands between Barovia and a forgotten Netherese archive.',
+        VisualCodexService.panelImageMap[1]!, 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23', Icons.door_front_door_outlined),
+    _StoryPanel('Vaelthara’s Warning',
+        'The silver-haired archlich speaks through the Weave: “Trust the light beyond the mists.”',
+        VisualCodexService.panelImageMap[2]!, 'https://images.unsplash.com/photo-1534447677768-be436bb09401', Icons.auto_awesome),
+    _StoryPanel('The Three Relics',
+        'Sight of Vaelthara, Hand of the Weave, and Silver Strand Codex resonate in the dark.',
+        VisualCodexService.panelImageMap[3]!, 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f', Icons.diamond_outlined),
+    _StoryPanel('An Unwritten Fate',
+        'Deep below Barovia, an ancient mechanism begins to turn.',
+        VisualCodexService.panelImageMap[4]!, 'https://images.unsplash.com/photo-1514539079130-25950c84af65', Icons.brightness_3_outlined),
+  ];
+  static const _choices = [
+    ('Lawful Good', 'Secure the archive and protect anyone trapped within.'),
+    ('Neutral Good', 'Seek survivors and offer assistance.'),
+    ('Chaotic Good', 'Defy the corrupted seal.'),
+    ('Utility', 'Study the runes and document their resonance.'),
+    ('Action', 'Advance cautiously through the threshold.'),
+  ];
+  final ArtProductionService _artProduction = ArtProductionService();
+  static const _tabs = ['Adventure', 'Character', 'Inventory', 'Journal', 'Atlas', 'Admin', 'LUMA-01', 'Copilot', 'Build Log', 'System Control', 'Categories', 'Art Studio', 'Storyboard', 'Modules', 'Command Notes', 'Project Memory', 'Image Navigation', 'V4 Controls', 'V11 Albums', 'Scene Studio', 'Fusion Studio', 'Encounter', 'Dice'];
+
+  late final Future<PanelArtAudit> _artAudit = VisualCodexAudit.checkUniquePanels();
+  MoonveilDatabase? _db;
+  Map<String, dynamic>? _vesper;
+  List<Map<String, Object?>> _inventory = [];
+  String? _error;
+  bool _loading = true;
+  String _tab = 'Adventure';
+  String? _selectedChoice;
+  Set<String> _archiveObjectives = {};
+  bool _savingObjective = false;
+  bool _savingChoice = false;
+
+  static int _abilityModifier(Map<String, dynamic>? state) {
+    if (state == null) return 0;
+    final direct = state['charisma_modifier'];
+    if (direct is int) return direct;
+    final attrs = state['attributes'];
+    if (attrs is Map) {
+      final score = attrs['charisma'] ?? attrs['CHA'];
+      if (score is num) return ((score - 10) / 2).floor();
+    }
+    return 0;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refresh();
+  }
+
+  Future<void> _refresh() async {
+    try {
+      final db = _db ?? await MultiversalRouterService.openSector('vesper');
+      final character = await db.loadCharacter('vesper-vane');
+      final inventory = await db.db.query('inventory_entries',
+          where: 'campaign_id = ? AND character_id = ?',
+          whereArgs: ['vesper', 'vesper-vane']);
+      final objectives = await MoonveilArchiveQuestService(db).completedObjectives();
+      final eventRows = await db.events();
+      String? savedChoice;
+      for (final row in eventRows) {
+        if (row['event_type'] == 'FORGOTTEN_ARCHIVE_CHOICE') {
+          final payload = jsonDecode(row['payload_json'] as String);
+          if (payload is Map && payload['choice'] is String) {
+            savedChoice = payload['choice'] as String;
+          }
+        }
+      }
+      if (!mounted) {
+        if (_db == null) await db.close();
+        return;
+      }
+      setState(() {
+        _db = db;
+        _vesper = character;
+        _inventory = inventory;
+        _selectedChoice = savedChoice;
+        _archiveObjectives = objectives;
+        _loading = false;
+        _error = null;
+      });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _error = e.toString();
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _db?.close();
+    super.dispose();
+  }
+
+  Future<void> _saveArchiveChoice(String choice) async {
+    final db = _db;
+    if (db == null || _vesper == null || _savingChoice) return;
+    setState(() => _savingChoice = true);
+    try {
+      await db.appendEvent(
+        eventId: 'archive-choice-${DateTime.now().microsecondsSinceEpoch}',
+        actorId: 'vesper-vane',
+        type: 'FORGOTTEN_ARCHIVE_CHOICE',
+        payload: {'scene': 'forgotten-netherese-barovian-archive',
+          'sector': 'D', 'link': 2, 'choice': choice},
+      );
+      if (mounted) setState(() => _selectedChoice = choice);
+    } catch (error) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Choice was not saved: $error')));
+    } finally {
+      if (mounted) setState(() => _savingChoice = false);
+    }
+  }
+
+  Future<void> _completeArchiveObjective(String objective) async {
+    final db = _db;
+    if (db == null || _savingObjective) return;
+    setState(() => _savingObjective = true);
+    try {
+      await MoonveilArchiveQuestService(db).completeObjective(objective);
+      final completed = await MoonveilArchiveQuestService(db).completedObjectives();
+      if (mounted) setState(() => _archiveObjectives = completed);
+    } catch (error) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Objective was not saved: $error')));
+    } finally {
+      if (mounted) setState(() => _savingObjective = false);
+    }
+  }
+
+  void _roll() => InteractiveDiceRollerModal.show(
+      context, modifier: _abilityModifier(_vesper));
+
+  @override
+  Widget build(BuildContext context) {
+    const accent = Color(0xFFD7B7FF);
+    return Scaffold(
+      backgroundColor: const Color(0xFF100E20),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF19132D),
+        title: const Text('☾ MOONVEIL · RAVENLOFT',
+            style: TextStyle(fontFamily: 'serif', fontWeight: FontWeight.bold)),
+        actions: [
+          IconButton(onPressed: _refresh, icon: const Icon(Icons.refresh),
+              tooltip: 'Reload verified save'),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: const Color(0xFF7552AB),
+        foregroundColor: Colors.white,
+        onPressed: _roll,
+        icon: const Icon(Icons.casino),
+        label: const Text('Roll d20'),
+      ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? Center(child: SelectableText('Storage error: $_error'))
+              : Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter, end: Alignment.bottomCenter,
+                      colors: [Color(0xFF302244), Color(0xFF151126), Color(0xFF0C0B18)],
+                    ),
+                  ),
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+                    children: [
+                      Text('VESPER VANE · THE SHATTERED WEAVE',
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: accent, fontFamily: 'serif')),
+                      const SizedBox(height: 10),
+                      MoonveilVttHudScreen(
+                        character: _vesper,
+                        ownedItems: _inventory.where((item) => item['owned'] == 1).length,
+                        onDice: _roll,
+                        onInventory: () => setState(() => _tab = 'Inventory'),
+                        onAtlas: () => setState(() => _tab = 'Atlas'),
+                        onCodex: () => setState(() => _tab = 'Categories'),
+                      ),
+                      const SizedBox(height: 12),
+                      if (_vesper == null)
+                        const Card(child: ListTile(
+                          leading: Icon(Icons.shield_outlined),
+                          title: Text('Verified checkpoint not imported'),
+                          subtitle: Text('No character level, HP, AC, or items will be invented.'),
+                        )),
+                      const SizedBox(height: 12),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(children: [
+                          for (final tab in _tabs)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: ChoiceChip(
+                                label: Text(tab),
+                                selected: _tab == tab,
+                                onSelected: (_) {
+                                  if (tab == 'Dice') {
+                                    _roll();
+                                  } else {
+                                    setState(() => _tab = tab);
+                                  }
+                                },
+                              ),
+                            ),
+                        ]),
+                      ),
+                      const SizedBox(height: 16),
+                      if (_tab == 'Encounter') ...[
+                        MoonveilEncounterScreen(character: _vesper),
+                      ] else if (_tab == 'Command Notes') ...[
+                        const SizedBox(height: 650, child: MoonveilMasterGuiAndAiHub()),
+                      ] else if (_tab == 'Scene Studio') ...[
+                        const SizedBox(height: 800, child: MoonveilSceneLibraryScreen()),
+                      ] else if (_tab == 'V11 Albums') ...[
+                        const MoonveilV11InventoryAlbum(),
+                      ] else if (_tab == 'V4 Controls') ...[
+                        MoonveilV4ActionGallery(onOpenTab: (tab) => setState(() => _tab = tab)),
+                      ] else if (_tab == 'Fusion Studio') ...[
+                        const MoonveilFusionGallery(),
+                      ] else if (_tab == 'Image Navigation') ...[
+                        MoonveilImageNavigation(onOpenTab: (tab) => setState(() => _tab = tab)),
+                      ] else if (_tab == 'Project Memory') ...[
+                        const SizedBox(height: 650, child: MoonveilProjectContextScreen()),
+                      ] else if (_tab == 'Modules') ...[
+                        MultiversalCommandDeckScreen(onOpenTab: (tab) => setState(() => _tab = tab)),
+                      ] else if (_tab == 'Adventure') ...[
+                        Text('The Forgotten Archive',
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontFamily: 'serif', color: accent)),
+                        const SizedBox(height: 12),
+                        LayoutBuilder(builder: (context, constraints) {
+                          final wide = constraints.maxWidth > 700;
+                          final width = wide
+                              ? (constraints.maxWidth - 14) / 2
+                              : constraints.maxWidth;
+                          return Wrap(spacing: 14, runSpacing: 14, children: [
+                            for (var i = 0; i < _panels.length; i++)
+                              SizedBox(
+                                width: width,
+                                child: _VisualStoryCard(index: i + 1, panel: _panels[i], artAudit: _artAudit),
+                              ),
+                          ]);
+                        }),
+                        if (_db != null && _vesper != null)
+                          ForgottenArchiveCombatPanel(database: _db!),
+                        if (_db != null && _vesper != null)
+                          ArchiveConduitPuzzlePanel(database: _db!),
+                        if (_db != null && _vesper != null)
+                          ArchiveObservatoryPanel(database: _db!),
+                        MoonveilArchiveScenePreview(
+                          choice: _selectedChoice,
+                          onEncounter: () => setState(() => _tab = 'Encounter'),
+                        ),
+                        if (_selectedChoice != null) Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              const Text('FORGOTTEN ARCHIVE · QUEST LEDGER'),
+                              const Text('Record an objective only after completing it in play. No rewards or stats are changed.'),
+                              for (final objective in const [
+                                ('guardian_repelled', 'Guardian repelled'),
+                                ('survivor_located', 'Survivor located'),
+                                ('seal_studied', 'Seal studied'),
+                              ]) CheckboxListTile(
+                                key: Key('archive-objective-${objective.$1}'),
+                                title: Text(objective.$2),
+                                value: _archiveObjectives.contains(objective.$1),
+                                onChanged: _savingObjective || _archiveObjectives.contains(objective.$1)
+                                  ? null : (_) => _completeArchiveObjective(objective.$1),
+                              ),
+                            ]),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Card(
+                          color: const Color(0xFF231A3C),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text('What does Vesper do?',
+                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                        fontFamily: 'serif', color: accent)),
+                                const SizedBox(height: 10),
+                                for (var i = 0; i < _choices.length; i++)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: OutlinedButton(
+                                      onPressed: _savingChoice || _db == null || _vesper == null
+                                          ? null : () => _saveArchiveChoice(_choices[i].$1),
+                                      style: OutlinedButton.styleFrom(
+                                        alignment: Alignment.centerLeft,
+                                        padding: const EdgeInsets.all(14),
+                                        side: BorderSide(color: _selectedChoice == _choices[i].$1
+                                            ? accent : const Color(0xFF79639B)),
+                                      ),
+                                      child: Text('${i + 1}. ${_choices[i].$1} — ${_choices[i].$2}'),
+                                    ),
+                                  ),
+                                if (_selectedChoice != null)
+                                  Text('Saved choice: $_selectedChoice.\n\n${ForgottenArchiveConsequences.describe(_selectedChoice) ?? 'Outcome unavailable.'}',
+                                      style: const TextStyle(color: accent)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ] else if (_tab == 'Character') ...[
+                        Text('Character Record', style: Theme.of(context).textTheme.titleLarge),
+                        CharacterSheetScreen(character: _vesper == null ? null : CharacterProfile.fromJson(_vesper!, ownedItems: _inventory.where((row) => row['owned'] == 1).map((row) { final item = row['item_json']; if (item is String) { try { final decoded = jsonDecode(item); if (decoded is Map && decoded['name'] is String) return decoded['name'] as String; } catch (_) {} } return row['item_id'].toString(); }).toList())),
+                      ] else if (_tab == 'Inventory') ...[
+                        Text('Inventory', style: Theme.of(context).textTheme.titleLarge),
+                        if (_inventory.isEmpty) const Text('No verified inventory imported'),
+                        for (final item in _inventory)
+                          Card(child: ListTile(title: Text(item['item_id']?.toString() ?? 'Item'),
+                              subtitle: Text(item.toString()))),
+                      ] else if (_tab == 'Journal') ...[
+                        const Text('Campaign journal integration pending; no events fabricated.'),
+                      ] else if (_tab == 'Categories') ...[
+                        if (_db != null) MoonveilCategoryBrowser(database: _db!),
+                      ] else if (_tab == 'Storyboard') ...[
+                        SizedBox(height: 680, child: CinematicStoryboardWidget(
+                          scene: CinematicScene(
+                            sceneId: 'archive_preview',
+                            title: 'Forgotten Archive — Preview (not saved)',
+                            panels: const [
+                              CinematicPanel(panelIndex: 1, caption: 'The silver threshold', assetPath: 'assets/images/panels/archive_threshold.png'),
+                              CinematicPanel(panelIndex: 2, caption: 'Vaelthara watches', assetPath: 'assets/images/panels/vaelthara_warning.png'),
+                              CinematicPanel(panelIndex: 3, caption: 'Three relics resonate', assetPath: 'assets/images/panels/relic_resonance.png'),
+                              CinematicPanel(panelIndex: 4, caption: 'The archive awakens', assetPath: 'assets/images/panels/archive_awakens.png'),
+                            ],
+                            decisionChoices: const ['Lawful Good — protect the archive', 'Neutral Good — seek survivors', 'Chaotic Good — challenge the seal', 'Utility — investigate the runes', 'Action — advance cautiously'],
+                          ),
+                          onChoiceSelected: (index) => ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Storyboard preview only — campaign state unchanged'))),
+                        )),
+                      ] else if (_tab == 'Art Studio') ...[
+                        ArtProductionDashboardScreen(artService: _artProduction),
+                      ] else if (_tab == 'System Control') ...[
+                        const SystemOverrideControlScreen(),
+                      ] else if (_tab == 'Build Log') ...[
+                        if (_db != null) CopilotBuildTimelineScreen(database: _db!),
+                      ] else if (_tab == 'Copilot') ...[
+                        if (_db != null) CopilotSyncDashboardScreen(database: _db!),
+                      ] else if (_tab == 'LUMA-01') ...[
+                        if (_db != null) LumaAdminRobotCommandScreen(database: _db!),
+                      ] else if (_tab == 'Admin') ...[
+                        if (_db != null) AdminConsoleScreen(database: _db!),
+                      ] else if (_tab == 'Atlas') ...[
+                        const VisualCodexGalleryGrid(),
+                        const SizedBox(height: 18),
+                        Text('Cosmological Sectors',
+                            style: Theme.of(context).textTheme.titleLarge),
+                        for (final entry in MultiversalRouterService.sectors.entries)
+                          Card(child: ListTile(
+                            leading: Icon(entry.key == 'vesper'
+                                ? Icons.nightlight_round : Icons.menu_book),
+                            title: Text(entry.value),
+                            subtitle: Text(entry.key == 'vesper'
+                                ? (_vesper == null
+                                    ? 'Awaiting verified checkpoint'
+                                    : 'Local checkpoint available')
+                                : 'Quarantined reference sector'),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () => MultiversalRouterService.showSector(
+                                context, entry.key),
+                          )),
+                      ],
+                    ],
+                  ),
+                ),
+    );
+  }
+}
+
+class _VisualStoryCard extends StatelessWidget {
+  const _VisualStoryCard({required this.index, required this.panel, required this.artAudit});
+  final int index;
+  final _StoryPanel panel;
+  final Future<PanelArtAudit> artAudit;
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: BorderRadius.circular(18),
+    child: Container(
+      height: 250,
+      decoration: BoxDecoration(
+        border: Border.all(color: const Color(0xFF9274B6)),
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Stack(fit: StackFit.expand, children: [
+        // Local art first. A network image is optional; a painted fallback
+        // remains visible offline when both sources are unavailable.
+        FutureBuilder<PanelArtAudit>(
+          future: artAudit,
+          builder: (context, snapshot) {
+            final uniqueLocal = snapshot.hasData &&
+                (snapshot.data!.usable[index] ?? false);
+            Widget remoteOrFallback() => Image.network(
+              panel.networkUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.lerp(const Color(0xFF4B3267),
+                          const Color(0xFF164456), index / 4)!,
+                      const Color(0xFF100B22),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Center(child: Icon(panel.icon, size: 96,
+                    color: const Color(0xAAD7B7FF))),
+              ),
+            );
+            if (!uniqueLocal) return remoteOrFallback();
+            return Image.asset(panel.asset, fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    remoteOrFallback());
+          },
+        ),
+        const DecoratedBox(decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter, end: Alignment.bottomCenter,
+            colors: [Colors.transparent, Color(0x88000000), Color(0xF0080712)],
+            stops: [0.25, 0.6, 1],
+          ),
+        )),
+        Positioned(left: 16, right: 16, bottom: 16, child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('PANEL $index', style: const TextStyle(
+                color: Color(0xFFD7B7FF), letterSpacing: 1.4, fontSize: 11)),
+            const SizedBox(height: 5),
+            Text(panel.title, style: const TextStyle(
+                fontFamily: 'serif', fontSize: 21, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 5),
+            Text(panel.story, maxLines: 3, overflow: TextOverflow.ellipsis),
+          ],
+        )),
+      ]),
+    ),
+  );
+}

@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Moonveil · Tactical War Table</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,Segoe UI,sans-serif;background:#090913;color:#f4eeff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#2a1d3c,#090913 75%)}main{max-width:1250px;margin:auto;padding:16px}
+h1{margin:.2em 0;font-size:clamp(1.8rem,5vw,2.9rem)}p{color:#c9bfdb;line-height:1.5}.panel{background:#1b172a;border:1px solid #594772;border-radius:14px;padding:15px;margin:12px 0}
+.layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(265px,1fr);gap:12px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}button,select,input{background:#332548;color:#f6edff;border:1px solid #8267a7;border-radius:8px;padding:9px;font:inherit}
+button{cursor:pointer}button:hover{background:#533871}button:focus-visible,select:focus-visible,input:focus-visible,.cell:focus-visible{outline:3px solid #e0c9ff;outline-offset:2px}
+.board{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));border:2px solid #8064aa;border-radius:8px;overflow:hidden;max-width:750px}
+.cell{aspect-ratio:1;min-width:0;padding:0;border:1px solid #514361;background:#242035;color:#fff;display:flex;align-items:center;justify-content:center;position:relative;border-radius:0;font-size:clamp(.7rem,1.7vw,1.3rem)}
+.cell:nth-child(even){background:#302642}.cell:hover{background:#574374}.cell.selected{outline:3px solid #ffe09c;outline-offset:-3px}
+.cell.cover:before{content:"▥";position:absolute;top:0;right:2px;color:#c0b2d7;font-size:.75rem}
+.token{width:80%;height:80%;display:grid;place-items:center;border-radius:50%;font-weight:800;border:2px solid #d7c8ff;z-index:1}
+.BLUE{background:#174c8d}.RED{background:#8b233e}.GREEN{background:#276e50}.muted{color:#b9a9cc;font-size:.87rem}
+.card{border:1px solid #57446d;border-radius:9px;padding:10px;margin:7px 0;background:#282035}
+.active{border-color:#f3c982;box-shadow:0 0 0 1px #f3c982}.bar{height:8px;border-radius:8px;background:#5b2935;overflow:hidden}.bar span{display:block;height:100%;background:#77c69a}
+label{display:grid;gap:4px}#log{white-space:pre-wrap;max-height:240px;overflow:auto;font-size:.85rem;color:#d5c9e3}
+a{color:#d7bfff}@media(max-width:850px){.layout{grid-template-columns:1fr}}@media(max-width:420px){.cell{font-size:.7rem}.token{border-width:1px}}
+</style></head><body><nav style="padding:12px;background:#171422"><a style="color:#dfcfff" href="./index.html">← Moonveil Adventure</a></nav><main>
+<header><small>MOONVEIL UNIVERSE · TACTICAL OPERATIONS</small><h1>⚔ Tactical War Table</h1>
+<p>Local tactical prototype: select a unit, then select a destination or adjacent target. Initiative, movement, attacks, cover, and combat logs are simulated here. This does not change official campaign saves or grant loot.</p>
+<p><a href="adventure-war-room.html">← Adventure War Room</a> · <a href="faction-war.html">Faction War</a> · <a href="living-world.html">Living World</a> · <a href="tactical-command-deck.html">🌙 Tactical Command Deck</a></p></header>
+<section class="panel"><div class="controls"><label>Battle theater<select id="theater"><option value="pit">Pit of Ghaunadaur</option><option value="maze">Endless Maze</option><option value="avernus">Avernian Rescue</option></select></label>
+<button id="newBattle">Start / reset skirmish</button><button id="nextTurn">End turn</button><button id="defend">Take defensive stance</button><button id="export">Export battle report</button></div>
+<p id="status" role="status" aria-live="polite">Choose a unit to begin.</p></section>
+<div class="layout"><section class="panel"><h2>10 × 10 Battle Grid</h2><div id="board" class="board" role="group" aria-label="Tactical battle grid"></div><p class="muted">One cell = 5 feet. Movement is orthogonal, up to 6 cells per turn. Cover blocks movement. Adjacent melee attacks use a simulated d20 roll. Select your active unit to issue orders.</p></section>
+<aside><section class="panel"><h2>Initiative & combatants</h2><div id="units"></div></section>
+<section class="panel"><h2>Battle status</h2><p>Round <strong id="round">1</strong> · Turn <strong id="turn">1</strong></p><p id="objective">Protect the civilians and survive the encounter.</p><p class="muted">BLUE = heroes · RED = hostile · GREEN = neutral</p></section>
+<section class="panel"><h2>Combat journal</h2><div id="log">No actions recorded.</div></section></aside></div>
+</main><script>
+"use strict";(()=>{
+const KEY="moonveil-tactical-war-v1",W=10,H=10;
+const $=id=>document.getElementById(id),roll=()=>1+Math.floor(Math.random()*20);
+const scenarios={
+ pit:{objective:"Secure a safe exit from the Pit without harming the refugee.",cover:[[3,3],[3,4],[6,5],[6,6]],
+ units:[["alice","Alice Z'ress","BLUE",1,1,24,3,2],["ally","Moonlit Defender","BLUE",1,3,20,2,1],["cult","Cult Vanguard","RED",8,7,18,2,0],["wraith","Pit Wraith","RED",7,8,16,2,1],["refugee","Refugee","GREEN",2,7,12,0,0]]},
+ maze:{objective:"Navigate the maze and defend the expedition.",cover:[[4,1],[4,2],[4,3],[4,4],[5,6],[5,7]],
+ units:[["alice","Alice Z'ress","BLUE",1,1,24,3,2],["ally","Moonlit Defender","BLUE",2,1,20,2,1],["minotaur","Minotaur Scout","RED",8,8,26,3,0],["refugee","Lost Explorer","GREEN",2,7,12,0,0]]},
+ avernus:{objective:"Hold the rescue corridor; avoid endangering civilians.",cover:[[3,2],[3,3],[6,6],[6,7]],
+ units:[["alice","Alice Z'ress","BLUE",1,2,24,3,2],["ally","Aasimar Redeemer","BLUE",2,2,28,3,1],["devil","Infernal Patrol","RED",8,7,22,3,1],["refugee","Evacuee","GREEN",1,8,12,0,0]]}
+};
+function seed(theater="pit"){const s=scenarios[theater];return {version:1,theater,round:1,turn:0,selected:null,moved:false,acted:false,defending:[],cover:s.cover,units:s.units.map((u,i)=>({id:u[0],name:u[1],side:u[2],x:u[3],y:u[4],hp:u[5],maxHp:u[5],damage:u[6],bonus:u[7],initiative:roll(),order:i})),log:[]};}
+function valid(s){return s&&s.version===1&&scenarios[s.theater]&&Number.isInteger(s.round)&&s.round>0&&Array.isArray(s.units)&&s.units.length>=3&&s.units.length<=5&&Array.isArray(s.log)&&s.log.length<=100&&s.units.every(u=>typeof u.id==="string"&&["BLUE","RED","GREEN"].includes(u.side)&&Number.isInteger(u.x)&&u.x>=0&&u.x<W&&Number.isInteger(u.y)&&u.y>=0&&u.y<H&&Number.isInteger(u.hp)&&u.hp>=0&&u.hp<=u.maxHp);}
+let state=seed();try{const raw=localStorage.getItem(KEY);if(raw){const s=JSON.parse(raw);if(valid(s))state=s;}}catch(_){}
+function live(){return state.units.filter(u=>u.hp>0&&u.side!=="GREEN").sort((a,b)=>b.initiative-a.initiative||a.order-b.order);}
+function actor(){const list=live();return list.length?list[state.turn%list.length]:null;}
+function at(x,y){return state.units.find(u=>u.hp>0&&u.x===x&&u.y===y);}
+function blocked(x,y){return state.cover.some(p=>p[0]===x&&p[1]===y);}
+function distance(a,b){return Math.abs(a.x-b.x)+Math.abs(a.y-b.y);}
+function addLog(message){state.log.unshift("Round "+state.round+": "+message);state.log=state.log.slice(0,100);$("status").textContent=message;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(_){$("status").textContent="Local storage unavailable. Export your report.";}render();}
+function advance(){const old=actor();const list=live();if(!list.length)return;
+ const index=list.findIndex(u=>u.id===old?.id);state.turn=(index+1)%list.length;
+ if(state.turn===0)state.round++;state.moved=false;state.acted=false;state.selected=actor()?.id||null;state.defending=[];
+ addLog("Turn passes to "+(actor()?.name||"no one")+".");save();}
+function attack(attacker,target){
+ if(state.acted){addLog("Attack already used this turn.");return;}
+ if(distance(attacker,target)!==1){addLog("Melee requires an adjacent target.");return;}
+ if(target.side===attacker.side||target.side==="GREEN"){addLog("Friendly and civilian attacks are disabled in this heroic prototype.");return;}
+ const die=roll(),total=die+attacker.bonus,hit=die===20||die!==1&&total>=12;
+ const damage=hit?attacker.damage+(die===20?attacker.damage:0):0;
+ target.hp=Math.max(0,target.hp-damage);state.acted=true;
+ addLog(attacker.name+" attacks "+target.name+": d20 "+die+" + "+attacker.bonus+" = "+total+(hit?"; "+damage+" damage.":"; miss.")+(target.hp===0?" Target defeated.":""));
+}
+function handle(x,y){
+ const current=actor(),occupant=at(x,y);
+ if(!current){addLog("No active combatants.");save();return;}
+ if(occupant&&occupant.id===current.id){state.selected=current.id;addLog("Selected "+current.name+".");save();return;}
+ if(state.selected!==current.id){addLog("Select the active unit: "+current.name+".");save();return;}
+ if(current.side==="RED"){addLog("Enemy turn: use End turn. Automated enemy AI is not yet implemented.");save();return;}
+ if(occupant){attack(current,occupant);save();return;}
+ if(blocked(x,y)){addLog("Terrain blocks this square.");save();return;}
+ if(state.moved){addLog("Movement already used this turn.");save();return;}
+ const d=Math.abs(current.x-x)+Math.abs(current.y-y);
+ if(d===0||d>6){addLog("Destination must be within six orthogonal cells.");save();return;}
+ // Breadth-first search prevents moving through cover or occupied squares.
+ const queue=[[current.x,current.y,0]],seen=new Set([current.x+","+current.y]);let reachable=false;
+ while(queue.length){const [cx,cy,steps]=queue.shift();if(cx===x&&cy===y){reachable=true;break;}if(steps>=6)continue;
+ for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=cx+dx,ny=cy+dy,k=nx+","+ny;
+ if(nx<0||ny<0||nx>=W||ny>=H||seen.has(k)||blocked(nx,ny)||at(nx,ny))continue;
+ seen.add(k);queue.push([nx,ny,steps+1]);}}
+ if(!reachable){addLog("No unobstructed path within movement range.");save();return;}
+ current.x=x;current.y=y;state.moved=true;addLog(current.name+" moves to "+(x+1)+","+(y+1)+".");save();
+}
+function render(){
+ $("theater").value=state.theater;$("round").textContent=state.round;$("turn").textContent=state.turn+1;
+ $("objective").textContent=scenarios[state.theater].objective;
+ const board=$("board");board.replaceChildren();
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){const cell=document.createElement("button");cell.type="button";cell.className="cell"+(blocked(x,y)?" cover":"");
+ const u=at(x,y);if(u){const token=document.createElement("span");token.className="token "+u.side;token.textContent=u.name.split(" ").map(w=>w[0]).join("").slice(0,2);cell.append(token);}
+ if(u?.id===state.selected)cell.classList.add("selected");
+ cell.title=(x+1)+","+(y+1)+(u?" · "+u.name+" ("+u.hp+" HP)":"");cell.setAttribute("aria-label",cell.title);
+ cell.addEventListener("click",()=>handle(x,y));board.append(cell);}
+ const root=$("units");root.replaceChildren();for(const u of [...state.units].sort((a,b)=>b.initiative-a.initiative||a.order-b.order)){
+ const card=document.createElement("div");card.className="card"+(u.id===actor()?.id?" active":"");
+ const head=document.createElement("div");head.textContent=u.name+" · "+u.side+" · Initiative "+u.initiative;card.append(head);
+ const hp=document.createElement("p");hp.textContent="HP "+u.hp+"/"+u.maxHp+(u.hp===0?" · Defeated":"");card.append(hp);
+ const bar=document.createElement("div");bar.className="bar";const fill=document.createElement("span");fill.style.width=100*u.hp/u.maxHp+"%";bar.append(fill);card.append(bar);root.append(card);}
+ $("log").textContent=state.log.length?state.log.join("\n"):"No actions recorded.";
+}
+$("newBattle").onclick=()=>{if(!confirm("Reset this local skirmish?"))return;state=seed($("theater").value);addLog("New skirmish initialized.");save();};
+$("theater").onchange=()=>{const choice=$("theater").value;if(!confirm("Load "+choice+" and reset the current skirmish?")){$("theater").value=state.theater;return;}state=seed(choice);save();};
+$("nextTurn").onclick=advance;
+$("defend").onclick=()=>{const u=actor();if(!u||u.side==="RED"){addLog("Only a player-controlled unit may defend.");save();return;}state.acted=true;state.defending.push(u.id);addLog(u.name+" takes a defensive stance (narrative marker; AC rules pending).");save();};
+$("export").onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="moonveil-tactical-battle.json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+render();
+})();
+</script><script src="./moonveil-module-hub.js" defer></script></body></html>

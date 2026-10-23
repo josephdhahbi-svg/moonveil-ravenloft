@@ -1,0 +1,41 @@
+name: Moonveil Flutter checks
+on:
+  push:
+    branches:
+      - 'integration/**'
+  pull_request:
+    branches:
+      - main
+jobs:
+  flutter-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter_client
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Test project memory and task robot
+        run: python -m unittest scripts/test_moonveil_project_memory.py scripts/test_seed_moonveil_project_memory.py scripts/test_moonveil_art_robot.py scripts/test_install_moonveil_ui_buttons.py
+        working-directory: .
+      - name: Test offline artwork installer
+        run: python ../scripts/test_install_archive_art.py
+      - name: Test V4 V5 V6 art robots and storyboard library
+        run: python -m unittest scripts.test_install_moonveil_v4 scripts.test_moonveil_script_library scripts.test_moonveil_asset_robot_v6
+        working-directory: .
+      - name: Check playable browser JavaScript syntax
+        run: node --check play/moonveil-audio.js && node --check play/moonveil-ravenloft-tables.js && node --check play/moonveil-cinematics.js && node --check play/moonveil-combat.js
+        working-directory: .
+      - name: Resolve packages
+        run: flutter pub get
+      - name: Analyze Dart
+        run: flutter analyze --no-fatal-infos
+      - name: Run Flutter tests
+        run: flutter test
+      - name: Generate missing Flutter web platform files
+        run: flutter create . --platforms web
+      - name: Build web without deployment
+        run: flutter build web --release --base-href "/moonveil-ravenloft/"
